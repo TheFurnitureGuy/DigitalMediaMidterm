@@ -1,0 +1,14 @@
+# Assignment documents and original media stay on this computer only
+reference files/
+sample photos/
+source-media/
+
+# Project instructions for Claude stay local
+CLAUDE.md
+
+# Submission archive
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db

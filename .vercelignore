@@ -1,0 +1,4 @@
+# Files that are in the repo but should not be on the live site
+CLAUDE.md
+README.md
+docs/
