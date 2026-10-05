@@ -195,25 +195,45 @@ a:hover {
   100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-/* Header */
+/* Header: a slim PS2 menu bar */
 
 .site-header {
   padding-block: 16px;
 }
 
 .site-header__bar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 4px 24px;
-  padding: 10px 12px 10px 20px;
-  border: 1px solid var(--border);
+  padding: 8px 10px 8px 16px;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
-  background: rgba(16, 26, 53, 0.85);
+  background:
+    linear-gradient(180deg, rgba(37, 99, 235, 0.16), transparent 70%),
+    rgba(12, 20, 42, 0.92);
+  box-shadow: 0 0 28px rgba(59, 118, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Thin light along the top edge */
+.site-header__bar::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-bright) 30%, #dbeaff 50%, var(--accent-bright) 70%, transparent);
+  box-shadow: 0 0 10px rgba(122, 179, 255, 0.8);
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
   color: var(--text);
   font-size: 1.125rem;
   font-weight: 700;
@@ -221,30 +241,107 @@ a:hover {
   text-decoration: none;
 }
 
+/* The glowing cube logo */
+.brand__logo {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--accent-bright);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px rgba(122, 179, 255, 0.85));
+}
+
+.brand__logo-front {
+  fill: rgba(122, 179, 255, 0.28);
+  stroke: none;
+}
+
 .nav-list {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .nav-list a {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 44px;
-  padding-inline: 12px;
+  padding-inline: 14px;
+  overflow: hidden;
   border-radius: 6px;
   color: var(--accent-bright);
   font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
 }
 
-.nav-list a:hover {
-  background: rgba(122, 179, 255, 0.1);
+.nav-list a:hover,
+.nav-list a:focus-visible {
+  background-color: rgba(122, 179, 255, 0.1);
   color: var(--text);
+}
+
+/* The current page glows, with a light under it like the PS2 menu cursor. */
+.nav-list a[aria-current="page"] {
+  background-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 0 16px rgba(59, 118, 246, 0.35);
+  color: var(--text);
+}
+
+.nav-list a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #dbeaff, transparent);
+  box-shadow: 0 0 8px rgba(122, 179, 255, 0.9);
+}
+
+/* A soft light slides across a link once on hover or focus. */
+.nav-list a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 60%;
+  background: linear-gradient(90deg, transparent, rgba(190, 220, 255, 0.22), transparent);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-list a:hover::before,
+  .nav-list a:focus-visible::before {
+    transform: translateX(220%);
+    transition: transform 0.5s ease;
+  }
+}
+
+/* Very narrow phones: the links wrap under the name. */
+@media (max-width: 379px) {
+  .site-header__bar {
+    padding-left: 12px;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  .nav-list a {
+    padding-inline: 10px;
+  }
 }
 
 /* Panels */
@@ -535,7 +632,43 @@ input[type="range"]::-moz-range-thumb {
 .learn {
   display: grid;
   gap: 24px;
-  padding-top: 48px;
+  padding-top: 72px;
+}
+
+.learn--page {
+  padding-top: 8px;
+}
+
+/* The band at the top of the Learn page */
+.learn__band {
+  position: relative;
+  padding: 32px 28px 28px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.28), rgba(37, 99, 235, 0.06) 70%),
+    var(--surface);
+  box-shadow: 0 0 32px rgba(59, 118, 246, 0.28);
+}
+
+.learn__band::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-bright), transparent);
+}
+
+.learn__band h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+}
+
+.learn__band p:last-child {
+  margin: 0;
+  color: var(--muted);
 }
 
 .learn__ideas {
@@ -713,16 +846,25 @@ input[type="range"]::-moz-range-thumb {
 
 /* Footer */
 
-.site-footer {
-  padding-block: 32px 48px;
-  border-top: 1px solid var(--border);
+/* APA reference list with a hanging indent */
+.references__list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
-.site-footer__lead {
+.references__list li {
+  padding-left: 2em;
+  text-indent: -2em;
+  overflow-wrap: anywhere;
+}
+
+.references__list i {
   color: var(--text);
-  font-weight: 600;
 }
 
 /* Interactive states */
@@ -1054,16 +1196,52 @@ input[type="range"].track-tint::-moz-range-track {
   margin: 4px 14px 14px;
 }
 
-/* Scroll reveal: sections below the lab fade in as they're reached. */
+/* Scroll reveal: sections stay hidden until they're reached,
+   then open like a PS2 system menu window. */
 .reveal-on [data-reveal] {
+  position: relative;
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .reveal-on [data-reveal].is-revealed {
   opacity: 1;
-  transform: none;
+  animation: reveal-window 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* The glowing line the panel opens from */
+.reveal-on [data-reveal].is-revealed::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  top: calc(50% - 1px);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #cfe4ff 20%, #ffffff 50%, #cfe4ff 80%, transparent);
+  box-shadow: 0 0 12px 2px rgba(122, 179, 255, 0.9);
+  animation: reveal-window-line 0.75s ease both;
+}
+
+.reveal-on [data-reveal].is-revealed > * {
+  animation: reveal-content 0.35s 0.45s ease both;
+}
+
+@keyframes reveal-window {
+  0%   { clip-path: inset(calc(50% - 1px) 0 calc(50% - 1px) 0); }
+  30%  { clip-path: inset(calc(50% - 1px) 0 calc(50% - 1px) 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes reveal-window-line {
+  0%   { opacity: 1; transform: scaleX(0); }
+  30%  { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+
+@keyframes reveal-content {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Line icons (Lucide), drawn in the current text color */
@@ -1410,6 +1588,50 @@ input[type="range"].track-tint::-moz-range-track {
 
   .learn__ideas--pairs {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Pinned previews: the images stay at the top while you scroll through the settings.
+   Sticky only works inside .workspace, so they scroll away after the action bar. */
+
+@media (min-width: 640px) {
+  .workspace__stage {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin-inline: -12px;
+    padding: 12px;
+    background: var(--bg);
+    box-shadow: 0 12px 16px -12px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Cap the frames so at least half the screen is left for the sliders. */
+  .workspace__stage .preview__frame {
+    width: min(100%, calc(32vh * 10 / 7));
+    margin-inline: auto;
+  }
+}
+
+/* Phones: only the processed image is pinned, at a smaller size. */
+@media (max-width: 639px) {
+  .workspace__stage {
+    display: contents;
+  }
+
+  .preview--processed {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 12px 16px -8px rgba(0, 0, 0, 0.8);
+  }
+
+  .preview--processed .preview__frame {
+    width: min(100%, 28vh);
+    margin-inline: auto;
+  }
+
+  .preview--processed .preview__note {
+    display: none;
   }
 }
 

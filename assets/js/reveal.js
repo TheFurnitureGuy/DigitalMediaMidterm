@@ -1,5 +1,5 @@
 /*
- * Scroll reveal for the sections below the lab. A section marked data-reveal fades in
+ * Scroll reveal. A section marked data-reveal opens like a PS2 menu window
  * when it scrolls into view and fades out again when the visitor scrolls back above it.
  * Hidden sections stay in the page, so screen readers and Find still reach them.
  * Without JavaScript or with reduced motion turned on, everything simply shows.
