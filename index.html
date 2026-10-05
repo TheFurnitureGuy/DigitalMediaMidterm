@@ -111,10 +111,15 @@
             <p class="control__help" id="palette-size-help">Reduce the number of colors used in the image.</p>
           </div>
 
-          <div class="control">
-            <button class="button button--toggle" type="button" id="dithering" aria-pressed="false" aria-describedby="dithering-help">Dithering: Off</button>
-            <p class="control__help" id="dithering-help">Use patterns of palette colors to suggest extra shades.</p>
-          </div>
+          <fieldset class="control segmented" aria-describedby="dithering-help">
+            <legend>Dithering</legend>
+            <div class="segmented__options">
+              <label><input type="radio" name="dithering" value="off"><span>Off</span></label>
+              <label><input type="radio" name="dithering" value="diffusion"><span>Error diffusion</span></label>
+              <label><input type="radio" name="dithering" value="ordered" checked><span>Ordered (PS2)</span></label>
+            </div>
+            <p class="control__help" id="dithering-help">Error diffusion spreads rounding errors to nearby pixels. Ordered dithering uses a repeating grid pattern, like many PS2 games.</p>
+          </fieldset>
 
           <div class="controls__actions">
             <button class="button" type="button" id="apply" disabled>Apply changes</button>
@@ -150,7 +155,7 @@
           </div>
           <div>
             <h3>Dithering</h3>
-            <p>With only a few colors, smooth areas like a sunset sky break into visible bands. Dithering places palette colors next to each other in a pattern. From a normal viewing distance, your eye blends them into shades the palette doesn’t have.</p>
+            <p>With only a few colors, smooth areas like a sunset sky break into visible bands. Dithering places palette colors next to each other in a pattern. From a normal viewing distance, your eye blends them into shades the palette doesn’t have. Many PS2 games used ordered dithering, which repeats a small grid pattern instead of spreading the rounding errors around.</p>
           </div>
         </div>
 

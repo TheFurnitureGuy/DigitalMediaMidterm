@@ -42,6 +42,25 @@
     triangleOpacity: 0.4
   };
 
+  // PS2-era screen effects, applied after the color preset and before palette reduction.
+  var EFFECTS = {
+    // Bright areas glow. threshold: brightness (0-255) where the glow starts.
+    // strength: how much of the glow is added. blur: how far the glow spreads.
+    bloom: { enabled: true, threshold: 200, strength: 0.35, blur: 8 },
+    // A CRT TV look. scanline: how much every other row is darkened.
+    // fringe: how many pixels red and blue are shifted. vignette: how much the corners darken.
+    crt: { enabled: true, scanline: 0.08, fringe: 1, vignette: 0.25 }
+  };
+
+  // Dithering methods: none, error diffusion (Floyd-Steinberg) or an ordered 4x4 grid like the PS2 used.
+  var DITHER_MODES = ['off', 'diffusion', 'ordered'];
+
+  // Strength of the ordered pattern, as a share of the average gap between palette colors.
+  var ORDERED = { spread: 0.6 };
+
+  // 4x4 Bayer matrix. Each cell sets how much a pixel at that grid position is nudged.
+  var BAYER_4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
   function fail(message) {
     throw new Error(message);
   }
@@ -118,6 +137,109 @@
     checkStep(canvas, 'Triangles');
   }
 
+  function makeCanvas(width, height) {
+    var c = document.createElement('canvas');
+    c.width = width;
+    c.height = height;
+    return c;
+  }
+
+  // Copies the bright parts, blurs them by shrinking and enlarging, then blends them back.
+  function applyBloom(canvas) {
+    var settings = EFFECTS.bloom;
+    var width = canvas.get('width');
+    var height = canvas.get('height');
+    var ctx = canvas.getContext();
+    var src = ctx.getImageData(0, 0, width, height).data;
+
+    var bright = new ImageData(width, height);
+    var out = bright.data;
+    var range = 255 - settings.threshold;
+    for (var i = 0; i < src.length; i += 4) {
+      var lum = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
+      var k = Math.max(0, (lum - settings.threshold) / range);
+      out[i] = src[i] * k;
+      out[i + 1] = src[i + 1] * k;
+      out[i + 2] = src[i + 2] * k;
+      out[i + 3] = 255;
+    }
+
+    var layer = makeCanvas(width, height);
+    layer.getContext('2d').putImageData(bright, 0, 0);
+
+    // Shrinking in halves and then enlarging gives a soft blur in every browser.
+    var steps = Math.round(Math.log2(settings.blur));
+    var current = layer;
+    for (var s = 0; s < steps; s++) {
+      var next = makeCanvas(Math.max(1, Math.round(current.width / 2)), Math.max(1, Math.round(current.height / 2)));
+      next.getContext('2d').drawImage(current, 0, 0, next.width, next.height);
+      current = next;
+    }
+
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.globalCompositeOperation = 'screen';
+    ctx.globalAlpha = settings.strength;
+    ctx.drawImage(current, 0, 0, width, height);
+    ctx.restore();
+  }
+
+  // Scanlines, red and blue fringing, and darker corners, in one pass over the pixels.
+  function applyCrt(canvas) {
+    var settings = EFFECTS.crt;
+    var width = canvas.get('width');
+    var height = canvas.get('height');
+    var ctx = canvas.getContext();
+    var image = ctx.getImageData(0, 0, width, height);
+    var out = image.data;
+    var src = new Uint8ClampedArray(out);
+
+    var cx = width / 2;
+    var cy = height / 2;
+    var maxDist2 = cx * cx + cy * cy;
+    var shift = settings.fringe;
+
+    for (var y = 0; y < height; y++) {
+      var row = y % 2 === 1 ? 1 - settings.scanline : 1;
+      var dy = y - cy;
+      for (var x = 0; x < width; x++) {
+        var i = (y * width + x) * 4;
+        var redIndex = (y * width + Math.min(width - 1, x + shift)) * 4;
+        var blueIndex = (y * width + Math.max(0, x - shift)) * 4;
+        var dx = x - cx;
+        var factor = row * (1 - settings.vignette * (dx * dx + dy * dy) / maxDist2);
+        out[i] = src[redIndex] * factor;
+        out[i + 1] = src[i + 1] * factor;
+        out[i + 2] = src[blueIndex + 2] * factor;
+      }
+    }
+    ctx.putImageData(image, 0, 0);
+  }
+
+  // Nudges each pixel by a repeating 4x4 pattern. Palette reduction then snaps
+  // neighboring pixels to different colors in a regular cross-hatch.
+  function applyOrderedPattern(canvas, colors) {
+    var width = canvas.get('width');
+    var height = canvas.get('height');
+    var ctx = canvas.getContext();
+    var image = ctx.getImageData(0, 0, width, height);
+    var data = image.data;
+
+    // Rough gap between neighboring palette colors in each channel.
+    var amount = (256 / Math.cbrt(colors)) * ORDERED.spread;
+
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        var nudge = ((BAYER_4[(y % 4) * 4 + (x % 4)] + 0.5) / 16 - 0.5) * amount;
+        var i = (y * width + x) * 4;
+        data[i] += nudge;
+        data[i + 1] += nudge;
+        data[i + 2] += nudge;
+      }
+    }
+    ctx.putImageData(image, 0, 0);
+  }
+
   function writePng(canvas) {
     return new Promise(function (resolve, reject) {
       canvas.write({ format: 'png' }, function (err, buf) {
@@ -129,13 +251,18 @@
 
   /*
    * Runs the filter on a copy of a resized image.
-   * Order: triangles, color preset, palette reduction (with optional dithering), export.
+   * Order: triangles, color preset, bloom, CRT look, ordered pattern (if chosen),
+   * palette reduction, export.
    * Palette reduction must come last, or canvas-plus turns the image back into full color.
    */
   async function processImage(resized, options) {
     var vertexCount = POLYGON_DETAIL[options.polygonDetail];
     if (!vertexCount) fail('Unknown polygon detail: ' + options.polygonDetail);
     if (PALETTE_SIZES.indexOf(options.colors) === -1) fail('Unknown palette size: ' + options.colors);
+
+    // true and false are still accepted and mean error diffusion and off.
+    var dither = options.dither === true ? 'diffusion' : (options.dither || 'off');
+    if (DITHER_MODES.indexOf(dither) === -1) fail('Unknown dithering: ' + options.dither);
 
     var timings = {};
     var start = now();
@@ -154,7 +281,14 @@
     timings.colors = now() - t;
 
     t = now();
-    canvas.quantize({ colors: options.colors, dither: !!options.dither, ditherType: 'FloydSteinberg' });
+    if (EFFECTS.bloom.enabled) applyBloom(canvas);
+    if (EFFECTS.crt.enabled) applyCrt(canvas);
+    if (dither === 'ordered') applyOrderedPattern(canvas, options.colors);
+    checkStep(canvas, 'Screen effects');
+    timings.effects = now() - t;
+
+    t = now();
+    canvas.quantize({ colors: options.colors, dither: dither === 'diffusion', ditherType: 'FloydSteinberg' });
     checkStep(canvas, 'Palette reduction');
     timings.quantize = now() - t;
 
@@ -181,6 +315,9 @@
     RESOLUTION: RESOLUTION,
     POLYGON_DETAIL: POLYGON_DETAIL,
     BLEND: BLEND,
+    EFFECTS: EFFECTS,
+    ORDERED: ORDERED,
+    DITHER_MODES: DITHER_MODES,
     PALETTE_SIZES: PALETTE_SIZES,
     PRESET: PRESET,
     checkFile: checkFile,

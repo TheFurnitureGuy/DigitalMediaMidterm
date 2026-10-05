@@ -10,7 +10,8 @@
     h2 { margin-top: 32px; font-size: 16px; color: #7ab3ff; }
     .row { display: flex; flex-wrap: wrap; gap: 16px; }
     figure { margin: 0; width: 300px; }
-    figure img { display: block; width: 300px; height: 300px; object-fit: contain; background: #060a14; image-rendering: pixelated; }
+    figure img { display: block; width: 300px; height: 300px; object-fit: contain; background: #060a14; }
+    figure img.detail { object-fit: none; object-position: 50% 45%; margin-top: 6px; height: 160px; }
     figcaption { margin-top: 6px; color: #a9b4cc; font-size: 12px; }
     figcaption b { color: #e8edf7; }
     #log { white-space: pre-wrap; color: #a9b4cc; }
@@ -96,6 +97,24 @@
       });
     }
 
+    // ?runs=ps2 builds up the PS2 screen effects one at a time.
+    if (query.get('runs') === 'ps2') {
+      RUNS = [];
+      var LOOKS = [
+        { name: '1. Current look (no screen effects, no dithering)', bloom: false, crt: false, dither: 'off', colors: 64 },
+        { name: '2. Plus bloom', bloom: true, crt: false, dither: 'off', colors: 64 },
+        { name: '3. Plus scanlines, fringing and vignette (all effects, no dithering)', bloom: true, crt: true, dither: 'off', colors: 64 },
+        { name: '4. All effects, error diffusion dithering', bloom: true, crt: true, dither: 'diffusion', colors: 64 },
+        { name: '5. All effects, ordered (PS2) dithering', bloom: true, crt: true, dither: 'ordered', colors: 64 },
+        { name: '6. All effects, ordered (PS2) dithering, 16 colors', bloom: true, crt: true, dither: 'ordered', colors: 16 }
+      ];
+      LOOKS.forEach(function (v) {
+        ['sunset', 'desert'].forEach(function (photo) {
+          RUNS.push({ group: v.name, photo: photo, resolution: 2, polygonDetail: 2, colors: v.colors, dither: v.dither, bloom: v.bloom, crt: v.crt, detail: true });
+        });
+      });
+    }
+
     function ms(n) { return Math.round(n) + ' ms'; }
     function kb(n) { return (n / 1024).toFixed(1) + ' KB'; }
 
@@ -151,6 +170,8 @@
 
         if (r.points) PhotoProcessor.POLYGON_DETAIL[r.polygonDetail] = r.points;
         if (r.opacity !== undefined) PhotoProcessor.BLEND.triangleOpacity = r.opacity;
+        if (r.bloom !== undefined) PhotoProcessor.EFFECTS.bloom.enabled = r.bloom;
+        if (r.crt !== undefined) PhotoProcessor.EFFECTS.crt.enabled = r.crt;
         var result = await PhotoProcessor.processImage(resizedCache[key], r);
         window.blobs.push(result.blob);
 
@@ -169,11 +190,18 @@
         img.src = URL.createObjectURL(result.blob);
         img.alt = r.photo + ' processed';
         var cap = document.createElement('figcaption');
-        cap.innerHTML = '<b>' + r.photo + ' · ' + LABELS[r.resolution] + ' · ' + r.colors + ' colors · dither ' + (r.dither ? 'on' : 'off') + '</b><br>' +
+        cap.innerHTML = '<b>' + r.photo + ' · ' + LABELS[r.resolution] + ' · ' + r.colors + ' colors · dither ' + (r.dither === true ? 'diffusion' : (r.dither || 'off')) + '</b><br>' +
           result.width + '×' + result.height + ', ' + result.palette.length + ' colors used, ' + kb(result.blob.size) + '<br>' +
-          'triangles ' + ms(result.timings.triangles) + ', colors ' + ms(result.timings.colors) +
+          'triangles ' + ms(result.timings.triangles) + ', colors ' + ms(result.timings.colors) + ', effects ' + ms(result.timings.effects || 0) +
           ', palette ' + ms(result.timings.quantize) + ', png ' + ms(result.timings.png) + ', total ' + ms(result.timings.total);
         fig.appendChild(img);
+        if (r.detail) {
+          var detail = document.createElement('img');
+          detail.className = 'detail';
+          detail.src = img.src;
+          detail.alt = r.photo + ' detail at actual size';
+          fig.appendChild(detail);
+        }
         fig.appendChild(cap);
         row.appendChild(fig);
       }

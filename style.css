@@ -751,6 +751,72 @@ input[type="range"]::-moz-range-thumb {
   font-variant-numeric: tabular-nums;
 }
 
+/* Dithering choice: radio buttons shown as one segmented bar */
+
+.segmented {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.segmented legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.segmented__options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+}
+
+.segmented__options label {
+  position: relative;
+  display: flex;
+}
+
+.segmented__options label + label {
+  border-left: 1px solid var(--border-strong);
+}
+
+.segmented__options input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented__options span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 6px 8px;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+
+.segmented__options span:hover {
+  background: rgba(122, 179, 255, 0.1);
+}
+
+.segmented__options input:checked + span {
+  background: var(--accent);
+  color: #fff;
+}
+
+.segmented__options input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
 /* Phones: stack the table rows */
 
 @media (max-width: 639px) {

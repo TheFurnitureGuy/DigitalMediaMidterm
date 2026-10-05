@@ -24,7 +24,13 @@
     polygonDetail: 2,
     resolution: 2,
     paletteIndex: P.PALETTE_SIZES.indexOf(64),
-    dither: false
+    dither: 'ordered'
+  };
+
+  var DITHER_NAMES = {
+    off: 'no dithering',
+    diffusion: 'error diffusion dithering',
+    ordered: 'ordered dithering'
   };
 
   var MESSAGES = {
@@ -51,7 +57,7 @@
     resolutionValue: document.getElementById('output-resolution-value'),
     palette: document.getElementById('palette-size'),
     paletteValue: document.getElementById('palette-size-value'),
-    dither: document.getElementById('dithering'),
+    ditherInputs: document.querySelectorAll('input[name="dithering"]'),
     apply: document.getElementById('apply'),
     reset: document.getElementById('reset'),
     download: document.getElementById('download'),
@@ -111,7 +117,7 @@
       polygonDetail: Number(el.polygon.value),
       resolution: Number(el.resolution.value),
       paletteIndex: Number(el.palette.value),
-      dither: el.dither.getAttribute('aria-pressed') === 'true'
+      dither: document.querySelector('input[name="dithering"]:checked').value
     };
   }
 
@@ -123,9 +129,10 @@
       a.dither === b.dither;
   }
 
-  function setDither(on) {
-    el.dither.setAttribute('aria-pressed', on ? 'true' : 'false');
-    el.dither.textContent = on ? 'Dithering: On' : 'Dithering: Off';
+  function setDither(mode) {
+    el.ditherInputs.forEach(function (input) {
+      input.checked = input.value === mode;
+    });
   }
 
   function updateLabels() {
@@ -315,7 +322,7 @@
       state.result = { url: URL.createObjectURL(result.blob), colors: colors };
       state.applied = settings;
       showImage(el.processedFrame, state.result.url,
-        'Processed ' + state.name + ', ' + colors + ' colors, dithering ' + (settings.dither ? 'on' : 'off'), true);
+        'Processed ' + state.name + ', ' + colors + ' colors, ' + DITHER_NAMES[settings.dither], false);
       renderPalette(result.palette, colors);
       setStatus(MESSAGES.ready);
     } catch (err) {
@@ -402,9 +409,8 @@
   [el.polygon, el.resolution, el.palette].forEach(function (input) {
     input.addEventListener('input', onSettingsChange);
   });
-  el.dither.addEventListener('click', function () {
-    setDither(el.dither.getAttribute('aria-pressed') !== 'true');
-    onSettingsChange();
+  el.ditherInputs.forEach(function (input) {
+    input.addEventListener('change', onSettingsChange);
   });
 
   el.apply.addEventListener('click', applySettings);
