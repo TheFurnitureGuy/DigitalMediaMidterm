@@ -48,8 +48,14 @@
             <input class="visually-hidden" type="file" id="upload-input" accept="image/jpeg,image/png,image/webp">
             Upload photo
           </label>
-          <button class="button" type="button" id="sample-sunset">Try sunset</button>
-          <button class="button" type="button" id="sample-desert">Try desert</button>
+          <button class="button button--sample" type="button" id="sample-sunset">
+            <img class="sample-thumb" src="assets/images/thumb-sunset.webp" width="96" height="96" alt="">
+            Try sunset
+          </button>
+          <button class="button button--sample" type="button" id="sample-desert">
+            <img class="sample-thumb" src="assets/images/thumb-desert.webp" width="96" height="96" alt="">
+            Try desert
+          </button>
         </div>
         <p class="hint">JPG, PNG or WebP. Processed in your browser.</p>
       </div>
@@ -121,6 +127,7 @@
       <section class="panel palette" aria-labelledby="palette-title">
         <h2 id="palette-title">Colors in your image</h2>
         <p>After processing, select a color to see its red, green and blue values.</p>
+        <p class="palette__count" id="palette-count"></p>
         <div class="palette__swatches" id="palette-swatches">
           <p class="palette__empty">Your palette will appear here after processing.</p>
         </div>
@@ -377,5 +384,8 @@
       <p>Not affiliated with Sony Interactive Entertainment.</p>
     </div>
   </footer>
+
+  <script src="assets/js/processor.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
 </body>
 </html>
