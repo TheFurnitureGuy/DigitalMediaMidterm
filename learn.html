@@ -282,6 +282,47 @@
         </div>
         </details>
       </div>
+      <section id="media-specs" class="panel media-specs" aria-labelledby="media-specs-title" data-reveal>
+        <p class="eyebrow">Technical media spec</p>
+        <h2 id="media-specs-title">Media file details</h2>
+        <p>The media files on this page, their sizes before and after compression, and how each one is encoded.</p>
+
+        <div class="table-wrap">
+          <table class="spec-table">
+            <caption class="visually-hidden">Media files used on this page</caption>
+            <thead>
+              <tr>
+                <th scope="col">Asset Name &amp; File Format</th>
+                <th scope="col">Original Size → Compressed</th>
+                <th scope="col">Color Depth / Quantization</th>
+                <th scope="col">Compression Algorithm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 1 · WebP</th>
+                <td data-label="Original Size → Compressed">412 KB JPEG (2160 × 3840) → 20 KB WebP (563 × 1000)</td>
+                <td data-label="Color Depth / Quantization">24-bit color (8 bits per channel), stored as YUV 4:2:0</td>
+                <td data-label="Compression Algorithm">Lossy WebP (VP8) at quality 80. The image is split into blocks, predicted, transformed and quantized, then entropy-coded</td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 2 · PNG</th>
+                <td data-label="Original Size → Compressed">3.6 MB JPEG (4928 × 3264) → 366 KB PNG (1000 × 662)</td>
+                <td data-label="Color Depth / Quantization">8-bit indexed: a 256-color palette with Floyd-Steinberg dithering</td>
+                <td data-label="Compression Algorithm">Lossless PNG (DEFLATE: LZ77 and Huffman coding). The colors were reduced to 256 before saving, so the color reduction itself is lossy</td>
+              </tr>
+              <tr>
+                <th scope="row" data-label="Asset Name &amp; File Format">Audio guide · MP3</th>
+                <td data-label="Original Size → Compressed">To be measured</td>
+                <td data-label="Color Depth / Quantization">To be measured</td>
+                <td data-label="Compression Algorithm">To be measured</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spec-note">Sizes use 1 KB = 1,000 bytes. Both photos were also resized for the web, which accounts for part of the saving.</p>
+      </section>
+
       <section class="panel references" aria-labelledby="references-title" data-reveal>
         <h2 id="references-title">References</h2>
         <ul class="references__list">
@@ -300,47 +341,6 @@
           <li>Team Ico. (2005). <i>Shadow of the Colossus</i> [Video game]. Sony Computer Entertainment.</li>
         </ul>
       </section>
-    </section>
-
-    <section id="media-specs" class="media-specs container" aria-labelledby="media-specs-title" data-reveal>
-      <p class="eyebrow">Technical media spec</p>
-      <h2 id="media-specs-title">Media file details</h2>
-      <p>The media files on this page, their sizes before and after compression, and how each one is encoded.</p>
-
-      <div class="table-wrap">
-        <table class="spec-table">
-          <caption class="visually-hidden">Media files used on this page</caption>
-          <thead>
-            <tr>
-              <th scope="col">Asset Name &amp; File Format</th>
-              <th scope="col">Original Size → Compressed</th>
-              <th scope="col">Color Depth / Quantization</th>
-              <th scope="col">Compression Algorithm</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 1 · WebP</th>
-              <td data-label="Original Size → Compressed">412 KB JPEG (2160 × 3840) → 20 KB WebP (563 × 1000)</td>
-              <td data-label="Color Depth / Quantization">24-bit color (8 bits per channel), stored as YUV 4:2:0</td>
-              <td data-label="Compression Algorithm">Lossy WebP (VP8) at quality 80. The image is split into blocks, predicted, transformed and quantized, then entropy-coded</td>
-            </tr>
-            <tr>
-              <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 2 · PNG</th>
-              <td data-label="Original Size → Compressed">3.6 MB JPEG (4928 × 3264) → 366 KB PNG (1000 × 662)</td>
-              <td data-label="Color Depth / Quantization">8-bit indexed: a 256-color palette with Floyd-Steinberg dithering</td>
-              <td data-label="Compression Algorithm">Lossless PNG (DEFLATE: LZ77 and Huffman coding). The colors were reduced to 256 before saving, so the color reduction itself is lossy</td>
-            </tr>
-            <tr>
-              <th scope="row" data-label="Asset Name &amp; File Format">Audio guide · MP3</th>
-              <td data-label="Original Size → Compressed">To be measured</td>
-              <td data-label="Color Depth / Quantization">To be measured</td>
-              <td data-label="Compression Algorithm">To be measured</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="spec-note">Sizes use 1 KB = 1,000 bytes. Both photos were also resized for the web, which accounts for part of the saving.</p>
     </section>
   </main>
 

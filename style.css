@@ -637,6 +637,7 @@ input[type="range"]::-moz-range-thumb {
 
 .learn--page {
   padding-top: 8px;
+  padding-bottom: 48px;
 }
 
 /* The band at the top of the Learn page */
@@ -788,11 +789,6 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Media specs */
-
-.media-specs {
-  padding-top: 64px;
-  padding-bottom: 32px;
-}
 
 .media-specs > p:not(.eyebrow) {
   max-width: 65ch;
