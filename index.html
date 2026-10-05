@@ -4,9 +4,378 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PS2-Inspired Photo Lab</title>
+  <meta name="description" content="Give a photo a PS2-inspired look and learn how RGB values, palettes, quantization and dithering change a digital image.">
+  <meta name="theme-color" content="#070b16">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070b16'/%3E%3Cpath d='M6 24 16 6l10 18z' fill='none' stroke='%237ab3ff' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>PS2-Inspired Photo Lab</h1>
-  <p>This page is being built. Check back soon.</p>
+  <a class="skip-link" href="#lab">Skip to the photo lab</a>
+
+  <div class="backdrop" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="site-header__bar">
+        <a class="brand" href="#top">PS2-Inspired Photo Lab</a>
+        <nav aria-label="Page sections">
+          <ul class="nav-list">
+            <li><a href="#lab">Lab</a></li>
+            <li><a href="#learn">Learn</a></li>
+            <li><a href="#media-specs">Media specs</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro container" aria-labelledby="intro-title">
+      <p class="eyebrow">Learn how digital color works</p>
+      <h1 id="intro-title">Give your photo a retro look.</h1>
+      <p class="intro__lead">Adjust your photo’s shapes and colors, compare the result, and learn how reducing colors changes an image.</p>
+    </section>
+
+    <section id="lab" class="lab container" aria-label="Photo lab">
+      <div class="panel choose">
+        <h2>Choose your image</h2>
+        <p>Upload a photo or start with a sample.</p>
+        <div class="choose__actions">
+          <label class="button upload">
+            <input class="visually-hidden" type="file" id="upload-input" accept="image/jpeg,image/png,image/webp">
+            Upload photo
+          </label>
+          <button class="button" type="button" id="sample-sunset">Try sunset</button>
+          <button class="button" type="button" id="sample-desert">Try desert</button>
+        </div>
+        <p class="hint">JPG, PNG or WebP. Processed in your browser.</p>
+      </div>
+
+      <div class="workspace">
+        <figure class="panel preview preview--original">
+          <figcaption class="label">Original</figcaption>
+          <div class="preview__frame" id="original-frame">
+            <p class="preview__empty">No image yet</p>
+          </div>
+        </figure>
+
+        <figure class="panel preview preview--processed">
+          <figcaption class="label">Processed</figcaption>
+          <div class="preview__frame" id="processed-frame">
+            <p class="preview__empty">No image yet</p>
+          </div>
+        </figure>
+
+        <div class="workspace__notes">
+          <p class="status" id="status" role="status" aria-live="polite">Choose a photo or try a sample to start.</p>
+          <p class="hint">Compare the edited photo with the original.</p>
+        </div>
+
+        <section class="panel controls" aria-labelledby="controls-title">
+          <h2 id="controls-title">Adjust the effect</h2>
+          <p class="controls__preset">Starting settings: PS2-inspired</p>
+
+          <div class="control">
+            <div class="control__head">
+              <label for="polygon-detail">Polygon detail</label>
+              <output for="polygon-detail" id="polygon-detail-value">Medium</output>
+            </div>
+            <input type="range" id="polygon-detail" min="1" max="3" step="1" value="2" aria-valuetext="Medium" aria-describedby="polygon-detail-help">
+            <p class="control__help" id="polygon-detail-help">Lower detail uses fewer, larger triangles.</p>
+          </div>
+
+          <div class="control">
+            <div class="control__head">
+              <label for="output-resolution">Output resolution</label>
+              <output for="output-resolution" id="output-resolution-value">Medium</output>
+            </div>
+            <input type="range" id="output-resolution" min="1" max="3" step="1" value="2" aria-valuetext="Medium" aria-describedby="output-resolution-help">
+            <p class="control__help" id="output-resolution-help">Lower resolution uses fewer pixels and shows less detail.</p>
+          </div>
+
+          <div class="control">
+            <div class="control__head">
+              <label for="palette-size">Palette size</label>
+              <output for="palette-size" id="palette-size-value">64 colors</output>
+            </div>
+            <input type="range" id="palette-size" min="0" max="6" step="1" value="4" aria-valuetext="64 colors" aria-describedby="palette-size-help">
+            <p class="control__help" id="palette-size-help">Reduce the number of colors used in the image.</p>
+          </div>
+
+          <div class="control">
+            <button class="button button--toggle" type="button" id="dithering" aria-pressed="false" aria-describedby="dithering-help">Dithering: Off</button>
+            <p class="control__help" id="dithering-help">Use patterns of palette colors to suggest extra shades.</p>
+          </div>
+
+          <div class="controls__actions">
+            <button class="button" type="button" id="apply" disabled>Apply changes</button>
+            <button class="button button--secondary" type="button" id="reset" disabled>Reset settings</button>
+            <button class="button button--secondary" type="button" id="download" disabled>Download PNG</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel palette" aria-labelledby="palette-title">
+        <h2 id="palette-title">Colors in your image</h2>
+        <p>After processing, select a color to see its red, green and blue values.</p>
+        <div class="palette__swatches" id="palette-swatches">
+          <p class="palette__empty">Your palette will appear here after processing.</p>
+        </div>
+        <p class="palette__readout" id="palette-readout" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section id="learn" class="learn container" aria-label="Learn">
+      <div class="panel">
+        <h2>Why does it look different?</h2>
+
+        <div class="learn__ideas">
+          <div>
+            <h3>RGB values</h3>
+            <p>Screens make every color by mixing red, green and blue light. Each channel has a value from 0 to 255, so one pixel can show about 16.7 million colors. For example, rgb(255, 140, 0) is a bright orange.</p>
+          </div>
+          <div>
+            <h3>Palettes and quantization</h3>
+            <p>A palette is a fixed set of colors an image is allowed to use. Quantization picks a palette for your photo, then replaces each pixel with the closest color in it. So several similar blues in a sky can all become one blue.</p>
+          </div>
+          <div>
+            <h3>Dithering</h3>
+            <p>With only a few colors, smooth areas like a sunset sky break into visible bands. Dithering places palette colors next to each other in a pattern. From a normal viewing distance, your eye blends them into shades the palette doesn’t have.</p>
+          </div>
+        </div>
+
+        <figure class="diagram">
+          <svg class="diagram__svg diagram__svg--wide" viewBox="0 0 960 270" role="img" aria-labelledby="diagram-wide-title diagram-wide-desc">
+            <title id="diagram-wide-title">How quantization maps colors to a palette</title>
+            <desc id="diagram-wide-desc">Eight original colors, four blues and four oranges, each point to the closest of three palette colors: one blue, one light orange and one dark orange. The result is shown twice. Without dithering, the image has hard bands. With dithering, checkered patterns of two palette colors soften the bands.</desc>
+            <defs>
+              <pattern id="wide-dither-a" width="32" height="32" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" fill="#82aed9"/>
+                <rect x="16" width="16" height="16" fill="#f3b468"/>
+                <rect y="16" width="16" height="16" fill="#f3b468"/>
+              </pattern>
+              <pattern id="wide-dither-b" width="32" height="32" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" fill="#f3b468"/>
+                <rect x="16" width="16" height="16" fill="#e98f48"/>
+                <rect y="16" width="16" height="16" fill="#e98f48"/>
+              </pattern>
+              <marker id="wide-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                <path d="M0 0 10 5 0 10z" class="diagram__arrowhead"/>
+              </marker>
+            </defs>
+
+            <text class="diagram__label" x="100" y="34" text-anchor="middle">Original colors</text>
+            <text class="diagram__label" x="435" y="34" text-anchor="middle">Closest colors in the palette</text>
+            <text class="diagram__label" x="784" y="34" text-anchor="middle">Image with fewer colors</text>
+
+            <g class="diagram__links">
+              <path d="M130 68C255 68 255 107 380 107"/>
+              <path d="M130 94C255 94 255 107 380 107"/>
+              <path d="M130 120C255 120 255 107 380 107"/>
+              <path d="M130 146C255 146 255 107 380 107"/>
+              <path d="M130 172C255 172 255 185 380 185"/>
+              <path d="M130 198C255 198 255 185 380 185"/>
+              <path d="M130 224C255 224 255 237 380 237"/>
+              <path d="M130 250C255 250 255 237 380 237"/>
+            </g>
+
+            <g class="diagram__swatches">
+              <rect x="70" y="58" width="60" height="20" rx="3" fill="#9fc3e6"/>
+              <rect x="70" y="84" width="60" height="20" rx="3" fill="#8ab4dd"/>
+              <rect x="70" y="110" width="60" height="20" rx="3" fill="#7aa6d4"/>
+              <rect x="70" y="136" width="60" height="20" rx="3" fill="#6b99cc"/>
+              <rect x="70" y="162" width="60" height="20" rx="3" fill="#f6c27a"/>
+              <rect x="70" y="188" width="60" height="20" rx="3" fill="#f2b066"/>
+              <rect x="70" y="214" width="60" height="20" rx="3" fill="#ee9f55"/>
+              <rect x="70" y="240" width="60" height="20" rx="3" fill="#e98c45"/>
+
+              <rect x="380" y="85" width="110" height="44" rx="4" fill="#82aed9"/>
+              <rect x="380" y="163" width="110" height="44" rx="4" fill="#f3b468"/>
+              <rect x="380" y="215" width="110" height="44" rx="4" fill="#e98f48"/>
+            </g>
+
+            <path class="diagram__arrow" d="M510 144H616" marker-end="url(#wide-arrow)"/>
+
+            <g class="diagram__grid">
+              <rect x="640" y="80" width="128" height="48" fill="#82aed9"/>
+              <rect x="640" y="128" width="128" height="48" fill="#f3b468"/>
+              <rect x="640" y="176" width="128" height="32" fill="#e98f48"/>
+              <rect class="diagram__frame" x="640" y="80" width="128" height="128"/>
+            </g>
+            <g class="diagram__grid">
+              <rect x="800" y="80" width="128" height="32" fill="#82aed9"/>
+              <rect x="800" y="112" width="128" height="32" fill="url(#wide-dither-a)"/>
+              <rect x="800" y="144" width="128" height="16" fill="#f3b468"/>
+              <rect x="800" y="160" width="128" height="32" fill="url(#wide-dither-b)"/>
+              <rect x="800" y="192" width="128" height="16" fill="#e98f48"/>
+              <rect class="diagram__frame" x="800" y="80" width="128" height="128"/>
+            </g>
+            <text class="diagram__note" x="704" y="234" text-anchor="middle">Without dithering</text>
+            <text class="diagram__note" x="864" y="234" text-anchor="middle">With dithering</text>
+          </svg>
+
+          <svg class="diagram__svg diagram__svg--tall" viewBox="0 0 340 460" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id="tall-dither-a" width="32" height="32" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" fill="#82aed9"/>
+                <rect x="16" width="16" height="16" fill="#f3b468"/>
+                <rect y="16" width="16" height="16" fill="#f3b468"/>
+              </pattern>
+              <pattern id="tall-dither-b" width="32" height="32" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" fill="#f3b468"/>
+                <rect x="16" width="16" height="16" fill="#e98f48"/>
+                <rect y="16" width="16" height="16" fill="#e98f48"/>
+              </pattern>
+              <marker id="tall-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                <path d="M0 0 10 5 0 10z" class="diagram__arrowhead"/>
+              </marker>
+            </defs>
+
+            <text class="diagram__label" x="170" y="24" text-anchor="middle">Original colors</text>
+
+            <g class="diagram__links">
+              <path d="M36 72C36 111 93 111 93 150"/>
+              <path d="M74 72C74 111 93 111 93 150"/>
+              <path d="M112 72C112 111 93 111 93 150"/>
+              <path d="M150 72C150 111 93 111 93 150"/>
+              <path d="M188 72C188 111 207 111 207 150"/>
+              <path d="M226 72C226 111 207 111 207 150"/>
+              <path d="M264 72C264 111 289 111 289 150"/>
+              <path d="M302 72C302 111 289 111 289 150"/>
+            </g>
+
+            <g class="diagram__swatches">
+              <rect x="20" y="40" width="32" height="32" rx="3" fill="#9fc3e6"/>
+              <rect x="58" y="40" width="32" height="32" rx="3" fill="#8ab4dd"/>
+              <rect x="96" y="40" width="32" height="32" rx="3" fill="#7aa6d4"/>
+              <rect x="134" y="40" width="32" height="32" rx="3" fill="#6b99cc"/>
+              <rect x="172" y="40" width="32" height="32" rx="3" fill="#f6c27a"/>
+              <rect x="210" y="40" width="32" height="32" rx="3" fill="#f2b066"/>
+              <rect x="248" y="40" width="32" height="32" rx="3" fill="#ee9f55"/>
+              <rect x="286" y="40" width="32" height="32" rx="3" fill="#e98c45"/>
+
+              <rect x="48" y="150" width="90" height="40" rx="4" fill="#82aed9"/>
+              <rect x="172" y="150" width="70" height="40" rx="4" fill="#f3b468"/>
+              <rect x="254" y="150" width="70" height="40" rx="4" fill="#e98f48"/>
+            </g>
+            <text class="diagram__label" x="170" y="214" text-anchor="middle">Closest colors in the palette</text>
+
+            <path class="diagram__arrow" d="M170 226V256" marker-end="url(#tall-arrow)"/>
+            <text class="diagram__label" x="170" y="280" text-anchor="middle">Image with fewer colors</text>
+
+            <g class="diagram__grid">
+              <rect x="32" y="288" width="128" height="48" fill="#82aed9"/>
+              <rect x="32" y="336" width="128" height="48" fill="#f3b468"/>
+              <rect x="32" y="384" width="128" height="32" fill="#e98f48"/>
+              <rect class="diagram__frame" x="32" y="288" width="128" height="128"/>
+            </g>
+            <g class="diagram__grid">
+              <rect x="192" y="288" width="128" height="32" fill="#82aed9"/>
+              <rect x="192" y="320" width="128" height="32" fill="url(#tall-dither-a)"/>
+              <rect x="192" y="352" width="128" height="16" fill="#f3b468"/>
+              <rect x="192" y="368" width="128" height="32" fill="url(#tall-dither-b)"/>
+              <rect x="192" y="400" width="128" height="16" fill="#e98f48"/>
+              <rect class="diagram__frame" x="192" y="288" width="128" height="128"/>
+            </g>
+            <text class="diagram__note" x="96" y="442" text-anchor="middle">Without dithering</text>
+            <text class="diagram__note" x="256" y="442" text-anchor="middle">With dithering</text>
+          </svg>
+
+          <figcaption>Each original color is replaced by its closest palette color. Dithering mixes palette colors in a pattern to soften the bands.</figcaption>
+        </figure>
+      </div>
+
+      <div class="panel">
+        <h2>What does each setting change?</h2>
+        <p>Each setting reduces a different part of the image.</p>
+
+        <div class="cards">
+          <article class="card">
+            <p class="label">Output resolution</p>
+            <h3>Fewer pixels</h3>
+            <p>Resolution sets how many pixels the image has. Lower resolution makes the image smaller and loses fine detail, but each pixel can still use any color in the palette.</p>
+          </article>
+          <article class="card">
+            <p class="label">Palette size</p>
+            <h3>Fewer colors</h3>
+            <p>Palette size sets how many different colors the image can use. The number of pixels stays the same. The size is a maximum, so a simple image can end up using fewer colors.</p>
+          </article>
+          <article class="card">
+            <p class="label">Polygon detail</p>
+            <h3>Fewer triangles</h3>
+            <p>Polygon detail sets how many triangles redraw the photo. Each triangle is filled with one color, so fewer triangles means larger flat shapes. The pixel count and the palette don’t change.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel listen">
+        <h2>Listen: how color reduction works</h2>
+        <p>This short recording explains the same ideas. It only plays when you start it.</p>
+        <audio class="listen__player" controls preload="none">
+          <source src="assets/audio/quantization-guide.mp3" type="audio/mpeg">
+          Your browser can’t play this audio. The transcript below has the same content.
+        </audio>
+        <h3>Transcript</h3>
+        <div class="listen__transcript">
+          <p>Every color on your screen is a mix of red, green and blue. Each one has a value from 0 to 255, so a single pixel can be one of about 16 million colors.</p>
+          <p>Quantization reduces that number. The image gets a small set of colors, called a palette, and each pixel is replaced with the closest color in it. So several similar blues might all become one blue.</p>
+          <p>With fewer colors, smooth areas like the sky start to show bands. Dithering helps with this. It places different palette colors next to each other in a pattern, and from a distance your eye blends them into a shade the palette doesn’t have.</p>
+          <p>Keep in mind that this changes the colors, not the size. Resolution sets how many pixels there are, and polygon detail sets how many triangles draw the photo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="media-specs" class="media-specs container" aria-labelledby="media-specs-title">
+      <p class="eyebrow">Technical media spec</p>
+      <h2 id="media-specs-title">Media file details</h2>
+      <p>This table lists the media files used on this page, with their sizes before and after compression and how each one is encoded.</p>
+
+      <div class="table-wrap">
+        <table class="spec-table">
+          <caption class="visually-hidden">Media files used on this page</caption>
+          <thead>
+            <tr>
+              <th scope="col">Asset Name &amp; File Format</th>
+              <th scope="col">Original Size → Compressed</th>
+              <th scope="col">Color Depth / Quantization</th>
+              <th scope="col">Compression Algorithm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" data-label="Asset Name &amp; File Format">Sunset sample</th>
+              <td data-label="Original Size → Compressed">To be measured</td>
+              <td data-label="Color Depth / Quantization">To be measured</td>
+              <td data-label="Compression Algorithm">To be measured</td>
+            </tr>
+            <tr>
+              <th scope="row" data-label="Asset Name &amp; File Format">Desert sample</th>
+              <td data-label="Original Size → Compressed">To be measured</td>
+              <td data-label="Color Depth / Quantization">To be measured</td>
+              <td data-label="Compression Algorithm">To be measured</td>
+            </tr>
+            <tr>
+              <th scope="row" data-label="Asset Name &amp; File Format">Audio guide · MP3</th>
+              <td data-label="Original Size → Compressed">To be measured</td>
+              <td data-label="Color Depth / Quantization">To be measured</td>
+              <td data-label="Compression Algorithm">To be measured</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="site-footer__lead">Creates a flat image with a PS2-inspired effect. No AI is used, and your photos stay in your browser.</p>
+      <p>Sample photos from Pexels: sunset by <a href="https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/">Guilherme Stecanella</a>, desert by <a href="https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/">Radis B</a>.</p>
+      <p>Image processing by <a href="https://github.com/jhuckaby/canvas-plus">canvas-plus</a> and <a href="https://github.com/snorpey/triangulate-image">triangulate-image</a>. Text set in <a href="https://rsms.me/inter/">Inter</a>.</p>
+      <p>Not affiliated with Sony Interactive Entertainment.</p>
+    </div>
+  </footer>
 </body>
 </html>

@@ -38,6 +38,15 @@ docs/             audio script (not deployed)
 
 Each license file sits next to its library or font.
 
+## Photo credits
+
+Both sample photos come from Pexels and are used under the Pexels license.
+
+| Photo | Photographer | Source |
+| --- | --- | --- |
+| Sunset over an open field | Guilherme Stecanella | https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/ |
+| Rock formations in a desert | Radis B | https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/ |
+
 ## Deployment
 
 Vercel deploys the repo root as a static site. There is no build step. `.vercelignore` keeps `CLAUDE.md`, `README.md` and `docs/` off the live site.
