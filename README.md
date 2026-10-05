@@ -49,6 +49,16 @@ Both sample photos come from Pexels and are used under the Pexels license.
 | Sample photo 1: sunset over an open field | Guilherme Stecanella | https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/ |
 | Sample photo 2: rock formations in a desert | Radis B | https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/ |
 
+## Text sources
+
+The transcript's facts about PS2 dithering come from these articles.
+
+| Article | Author | Source |
+| --- | --- | --- |
+| PlayStation 2 Architecture | Rodrigo Copetti | https://www.copetti.org/writings/consoles/playstation-2/ |
+| PlayStation2 and the CRT TV | Libretro | https://www.libretro.com/?p=50686 |
+| Here's why retro games look better on old CRT TVs | Igor Bonifacic, Engadget | https://engadget.com/2236809/why-retro-games-look-better-old-crt-tv |
+
 ## Deployment
 
 Vercel deploys the repo root as a static site. There is no build step. `.vercelignore` keeps `CLAUDE.md`, `README.md` and `docs/` off the live site.
