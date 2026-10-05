@@ -7,14 +7,14 @@
   <style>
     body { margin: 24px; background: #070b16; color: #e8edf7; font: 14px/1.5 system-ui, sans-serif; }
     h1 { font-size: 20px; }
-    h2 { margin-top: 32px; font-size: 16px; color: #7ab3ff; }
+    h2 { margin-top: 40px; padding: 10px 14px; border-left: 4px solid #7ab3ff; background: #101a35; font-size: 18px; color: #fff; }
     .row { display: flex; flex-wrap: wrap; gap: 16px; }
     figure { margin: 0; width: 300px; }
     figure img { display: block; width: 300px; height: 300px; object-fit: contain; background: #060a14; }
     figure img.detail { object-fit: none; object-position: 50% 45%; margin-top: 6px; height: 160px; }
     figcaption { margin-top: 6px; color: #a9b4cc; font-size: 12px; }
     figcaption b { color: #e8edf7; }
-    #log { white-space: pre-wrap; color: #a9b4cc; }
+    #log { color: #a9b4cc; }
   </style>
 </head>
 <body>
@@ -24,120 +24,45 @@
   <div id="results"></div>
 
   <script src="../assets/js/vendor/canvas-plus.js"></script>
-  <script src="../assets/js/vendor/triangulate-image.min.js"></script>
   <script src="../assets/js/vendor/pixi.min.js"></script>
   <script src="../assets/js/vendor/pixi-filters.js"></script>
   <script src="../assets/js/processor.js"></script>
   <script>
     var PHOTOS = {
-      sunset: '../sample photos/p1_Guilherme-Stecanella.jpg',
-      desert: '../sample photos/p2_Radis-B.jpg'
+      sunset: '../assets/images/sample-sunset.webp',
+      desert: '../assets/images/sample-desert.png'
     };
-    var LABELS = { 1: 'Low', 2: 'Medium', 3: 'High' };
+    var LEVELS = { 1: 'Low', 2: 'Medium', 3: 'High' };
+    var PRESETS = PhotoProcessor.LOOK_PRESETS;
 
-    var RUNS = [
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'sunset', resolution: 1, polygonDetail: 1, colors: 64, dither: false },
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 64, dither: false },
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'sunset', resolution: 3, polygonDetail: 3, colors: 64, dither: false },
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'desert', resolution: 1, polygonDetail: 1, colors: 64, dither: false },
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'desert', resolution: 2, polygonDetail: 2, colors: 64, dither: false },
-      { group: 'Resolution sweep (64 colors, no dithering)', photo: 'desert', resolution: 3, polygonDetail: 3, colors: 64, dither: false },
-      { group: 'Dithering comparison (Medium, 16 colors)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 16, dither: false },
-      { group: 'Dithering comparison (Medium, 16 colors)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 16, dither: true },
-      { group: 'Dithering comparison (Medium, 16 colors)', photo: 'desert', resolution: 2, polygonDetail: 2, colors: 16, dither: false },
-      { group: 'Dithering comparison (Medium, 16 colors)', photo: 'desert', resolution: 2, polygonDetail: 2, colors: 16, dither: true },
-      { group: 'Palette sweep (sunset, Medium, no dithering)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 4, dither: false },
-      { group: 'Palette sweep (sunset, Medium, no dithering)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 16, dither: false },
-      { group: 'Palette sweep (sunset, Medium, no dithering)', photo: 'sunset', resolution: 2, polygonDetail: 2, colors: 64, dither: false }
-    ];
-
-    // Optional URL settings for tuning:
-    // ?preset={"saturation":40,...} overrides the color preset.
-    // ?runs=medium runs only the two Medium, 64 color results.
-    var query = new URLSearchParams(location.search);
-    if (query.get('preset')) Object.assign(PhotoProcessor.PRESET, JSON.parse(query.get('preset')));
-    if (query.get('runs') === 'medium') {
-      RUNS = RUNS.filter(function (r) { return r.resolution === 2 && r.colors === 64 && r.group.indexOf('Resolution') === 0; });
-    }
-
-    // ?runs=variants compares triangle settings at Medium with 64 colors.
-    // Each variant sets the Medium point count and how strongly triangles cover the photo.
-    var VARIANTS = [
-      { name: 'Photo only (no triangles)', points: 1200, opacity: 0 },
-      { name: 'Current: 1200 points, full', points: 1200, opacity: 1 },
-      { name: '3000 points, full', points: 3000, opacity: 1 },
-      { name: '6000 points, full', points: 6000, opacity: 1 },
-      { name: '1200 points, 60% over photo', points: 1200, opacity: 0.6 },
-      { name: '3000 points, 60% over photo', points: 3000, opacity: 0.6 },
-      { name: '3000 points, 40% over photo', points: 3000, opacity: 0.4 }
-    ];
-    if (query.get('runs') === 'variants') {
-      RUNS = [];
-      VARIANTS.forEach(function (v) {
-        ['sunset', 'desert'].forEach(function (photo) {
-          RUNS.push({ group: v.name, photo: photo, resolution: 2, polygonDetail: 2, colors: 64, dither: false, points: v.points, opacity: v.opacity });
-        });
+    // Each run: a group heading, a photo, and the settings passed to processImage.
+    var RUNS = [];
+    ['clean', 'colossus', 'silenthill', 'snakeeater'].forEach(function (name) {
+      ['sunset', 'desert'].forEach(function (photo) {
+        RUNS.push({ group: 'Preset: ' + name, photo: photo, resolution: 2, colors: 64, dither: 'ordered', look: PRESETS[name], lookName: name });
       });
-    }
-
-    // ?runs=strength compares lighter triangle strengths against the untouched photo.
-    if (query.get('runs') === 'strength') {
-      RUNS = [];
-      var STRENGTHS = [
-        { name: 'Original photo (unprocessed)', original: true },
-        { name: 'Photo only: preset and 64 colors, no triangles', polygonDetail: 2, opacity: 0 },
-        { name: 'Triangles at 40%, 1200 points', polygonDetail: 2, opacity: 0.4 },
-        { name: 'Triangles at 30%, 1200 points', polygonDetail: 2, opacity: 0.3 },
-        { name: 'Triangles at 20%, 1200 points', polygonDetail: 2, opacity: 0.2 },
-        { name: 'Triangles at 10%, 1200 points', polygonDetail: 2, opacity: 0.1 },
-        { name: 'Triangles at 30%, 300 points (Low detail)', polygonDetail: 1, opacity: 0.3 }
-      ];
-      STRENGTHS.forEach(function (v) {
-        ['sunset', 'desert'].forEach(function (photo) {
-          RUNS.push({ group: v.name, photo: photo, resolution: 2, polygonDetail: v.polygonDetail || 2, colors: 64, dither: false, opacity: v.opacity, original: !!v.original });
-        });
-      });
-    }
-
-    // ?runs=ps2 builds up the PS2 screen effects one at a time.
-    if (query.get('runs') === 'ps2') {
-      RUNS = [];
-      var LOOKS = [
-        { name: '1. Current look (no screen effects, no dithering)', bloom: false, crt: false, dither: 'off', colors: 64 },
-        { name: '2. Plus bloom', bloom: true, crt: false, dither: 'off', colors: 64 },
-        { name: '3. Plus scanlines, fringing and vignette (all effects, no dithering)', bloom: true, crt: true, dither: 'off', colors: 64 },
-        { name: '4. All effects, error diffusion dithering', bloom: true, crt: true, dither: 'diffusion', colors: 64 },
-        { name: '5. All effects, ordered (PS2) dithering', bloom: true, crt: true, dither: 'ordered', colors: 64 },
-        { name: '6. All effects, ordered (PS2) dithering, 16 colors', bloom: true, crt: true, dither: 'ordered', colors: 16 }
-      ];
-      LOOKS.forEach(function (v) {
-        ['sunset', 'desert'].forEach(function (photo) {
-          RUNS.push({ group: v.name, photo: photo, resolution: 2, polygonDetail: 2, colors: v.colors, dither: v.dither, bloom: v.bloom, crt: v.crt, detail: true });
-        });
-      });
-    }
+    });
+    [1, 2, 3].forEach(function (res) {
+      RUNS.push({ group: 'Resolution sweep (Clean)', photo: 'desert', resolution: res, colors: 64, dither: 'ordered', look: PRESETS.clean, lookName: 'clean' });
+    });
+    ['off', 'diffusion', 'ordered'].forEach(function (d) {
+      RUNS.push({ group: 'Dithering at 16 colors (Clean)', photo: 'sunset', resolution: 2, colors: 16, dither: d, look: PRESETS.clean, lookName: 'clean' });
+    });
 
     function ms(n) { return Math.round(n) + ' ms'; }
     function kb(n) { return (n / 1024).toFixed(1) + ' KB'; }
 
     // Exposed so the Playwright script can read the numbers.
     window.testResults = [];
-    window.blobs = [];
 
     async function run() {
-      var log = document.getElementById('log');
       var out = document.getElementById('results');
       var originals = {};
-      var resizedCache = {};
+      var resized = {};
       var row = null;
       var group = '';
 
-      for (var name in PHOTOS) {
-        var t = performance.now();
-        originals[name] = await PhotoProcessor.loadImage(PHOTOS[name]);
-        window.testResults.push({ step: 'load', photo: name, ms: performance.now() - t,
-          size: originals[name].get('width') + 'x' + originals[name].get('height') });
-      }
+      for (var name in PHOTOS) originals[name] = await PhotoProcessor.loadImage(PHOTOS[name]);
 
       for (var i = 0; i < RUNS.length; i++) {
         var r = RUNS[i];
@@ -150,64 +75,29 @@
           row.className = 'row';
           out.appendChild(row);
         }
-
-        if (r.original) {
-          var ofig = document.createElement('figure');
-          var oimg = document.createElement('img');
-          oimg.src = PHOTOS[r.photo];
-          oimg.alt = r.photo + ' original';
-          oimg.style.imageRendering = 'auto';
-          var ocap = document.createElement('figcaption');
-          ocap.innerHTML = '<b>' + r.photo + ' · original</b>';
-          ofig.appendChild(oimg);
-          ofig.appendChild(ocap);
-          row.appendChild(ofig);
-          continue;
-        }
-
         var key = r.photo + r.resolution;
-        var t0 = performance.now();
-        if (!resizedCache[key]) resizedCache[key] = PhotoProcessor.resizeImage(originals[r.photo], r.resolution);
-        var resizeMs = performance.now() - t0;
-
-        if (r.points) PhotoProcessor.POLYGON_DETAIL[r.polygonDetail] = r.points;
-        if (r.opacity !== undefined) PhotoProcessor.BLEND.triangleOpacity = r.opacity;
-        if (r.bloom !== undefined) PhotoProcessor.EFFECTS.bloom.enabled = r.bloom;
-        if (r.crt !== undefined) PhotoProcessor.EFFECTS.crt.enabled = r.crt;
-        var result = await PhotoProcessor.processImage(resizedCache[key], r);
-        window.blobs.push(result.blob);
-
-        var entry = Object.assign({}, r, {
-          resizeMs: resizeMs,
-          width: result.width,
-          height: result.height,
-          paletteCount: result.palette.length,
-          bytes: result.blob.size,
-          timings: result.timings
-        });
-        window.testResults.push(entry);
+        if (!resized[key]) resized[key] = PhotoProcessor.resizeImage(originals[r.photo], r.resolution);
+        var result = await PhotoProcessor.processImage(resized[key], r);
+        window.testResults.push(Object.assign({}, r, { width: result.width, height: result.height, bytes: result.blob.size, used: result.palette.length, renderer: result.renderer, timings: result.timings }));
 
         var fig = document.createElement('figure');
         var img = document.createElement('img');
         img.src = URL.createObjectURL(result.blob);
         img.alt = r.photo + ' processed';
+        var detail = document.createElement('img');
+        detail.className = 'detail';
+        detail.src = img.src;
+        detail.alt = r.photo + ' detail at actual size';
         var cap = document.createElement('figcaption');
-        cap.innerHTML = '<b>' + r.photo + ' · ' + LABELS[r.resolution] + ' · ' + r.colors + ' colors · dither ' + (r.dither === true ? 'diffusion' : (r.dither || 'off')) + '</b><br>' +
-          result.width + '×' + result.height + ', ' + result.palette.length + ' colors used, ' + kb(result.blob.size) + '<br>' +
-          'triangles ' + ms(result.timings.triangles) + ', colors ' + ms(result.timings.colors) + ', effects ' + ms(result.timings.effects || 0) +
-          ', palette ' + ms(result.timings.quantize) + ', png ' + ms(result.timings.png) + ', total ' + ms(result.timings.total);
+        cap.innerHTML = '<b>' + r.photo + ' · ' + r.lookName + ' · ' + LEVELS[r.resolution] + ' · ' + r.colors + ' colors · ' + r.dither + '</b><br>' +
+          result.width + '×' + result.height + ', ' + result.palette.length + ' colors used, ' + kb(result.blob.size) + ', ' + result.renderer + '<br>' +
+          'total ' + ms(result.timings.total) + ' (palette ' + ms(result.timings.quantize) + ')';
         fig.appendChild(img);
-        if (r.detail) {
-          var detail = document.createElement('img');
-          detail.className = 'detail';
-          detail.src = img.src;
-          detail.alt = r.photo + ' detail at actual size';
-          fig.appendChild(detail);
-        }
+        fig.appendChild(detail);
         fig.appendChild(cap);
         row.appendChild(fig);
       }
-      log.textContent = 'Done.';
+      document.getElementById('log').textContent = 'Done.';
       window.testDone = true;
     }
 

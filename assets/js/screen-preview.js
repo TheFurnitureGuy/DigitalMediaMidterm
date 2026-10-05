@@ -80,8 +80,9 @@
     crt = null;
   }
 
-  // Prepares the preview for a new image. Rejects if WebGL isn't available.
-  async function load(source, label) {
+  // Prepares the preview for a new image, using the same glow and grain as the PNG.
+  // Rejects if WebGL isn't available.
+  async function load(source, label, screen) {
     await ensureApp();
     clearSprite();
     var width = source.width;
@@ -93,7 +94,7 @@
     copy.height = height;
     copy.getContext('2d').drawImage(source, 0, 0);
 
-    var filters = PhotoProcessor.makeScreenFilters();
+    var filters = PhotoProcessor.makeScreenFilters(screen);
     sprite = new PIXI.Sprite(PIXI.Texture.from(copy, true));
     sprite.filters = filters;
     sprite.filterArea = new PIXI.Rectangle(0, 0, width, height);

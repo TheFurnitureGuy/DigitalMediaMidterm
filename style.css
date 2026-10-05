@@ -163,20 +163,36 @@ a:hover {
 
 .backdrop span {
   position: absolute;
-  border: 1px solid rgba(122, 179, 255, 0.14);
-  background: linear-gradient(135deg, rgba(59, 118, 246, 0.1), rgba(59, 118, 246, 0.02));
+  border: 1px solid rgba(122, 179, 255, 0.18);
   border-radius: 6px;
-  animation: drift 40s ease-in-out infinite alternate;
+  background: linear-gradient(135deg, rgba(59, 118, 246, 0.12), rgba(59, 118, 246, 0.02));
+  box-shadow: 0 0 18px rgba(59, 118, 246, 0.12);
+  animation: float-a 18s ease-in-out infinite;
+  will-change: transform;
 }
 
-.backdrop span:nth-child(1) { top: 12%; left: 6%; width: 90px; height: 90px; }
-.backdrop span:nth-child(2) { top: 55%; left: 88%; width: 140px; height: 140px; animation-duration: 52s; }
-.backdrop span:nth-child(3) { top: 78%; left: 14%; width: 60px; height: 60px; animation-duration: 46s; }
-.backdrop span:nth-child(4) { top: 24%; left: 76%; width: 50px; height: 50px; animation-duration: 58s; }
+/* Floating blocks in mixed sizes, each on its own timing so they never move together. */
+.backdrop span:nth-child(1)  { top: 10%; left: 5%;  width: 90px;  height: 90px; }
+.backdrop span:nth-child(2)  { top: 52%; left: 89%; width: 140px; height: 140px; animation-name: float-b; animation-duration: 22s; animation-delay: -4s; }
+.backdrop span:nth-child(3)  { top: 78%; left: 12%; width: 60px;  height: 60px;  animation-duration: 15s; animation-delay: -9s; }
+.backdrop span:nth-child(4)  { top: 22%; left: 78%; width: 50px;  height: 50px;  animation-name: float-b; animation-duration: 17s; animation-delay: -2s; }
+.backdrop span:nth-child(5)  { top: 38%; left: 2%;  width: 34px;  height: 34px;  animation-duration: 14s; animation-delay: -6s; }
+.backdrop span:nth-child(6)  { top: 66%; left: 70%; width: 70px;  height: 70px;  animation-name: float-b; animation-duration: 20s; animation-delay: -11s; }
+.backdrop span:nth-child(7)  { top: 6%;  left: 46%; width: 40px;  height: 40px;  animation-duration: 24s; animation-delay: -3s; }
+.backdrop span:nth-child(8)  { top: 88%; left: 48%; width: 110px; height: 110px; animation-name: float-b; animation-duration: 21s; animation-delay: -14s; }
+.backdrop span:nth-child(9)  { top: 30%; left: 93%; width: 28px;  height: 28px;  animation-duration: 16s; animation-delay: -7s; }
+.backdrop span:nth-child(10) { top: 60%; left: 30%; width: 46px;  height: 46px;  animation-name: float-b; animation-duration: 19s; animation-delay: -5s; opacity: 0.7; }
 
-@keyframes drift {
-  from { transform: translateY(0) rotate(0deg); }
-  to { transform: translateY(-60px) rotate(45deg); }
+@keyframes float-a {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(10px, -22px) rotate(6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes float-b {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(-12px, 18px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 /* Header */
@@ -342,17 +358,14 @@ a:hover {
   display: grid;
   gap: 24px;
   grid-template-columns: 1fr;
-  grid-template-areas:
-    "original"
-    "processed"
-    "notes"
-    "controls";
 }
 
-.preview--original { grid-area: original; }
-.preview--processed { grid-area: processed; }
-.workspace__notes { grid-area: notes; }
-.controls { grid-area: controls; }
+/* The two previews, side by side from tablet size up. */
+.workspace__stage {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
 
 .preview {
   padding: 16px;
@@ -384,12 +397,34 @@ a:hover {
   font-size: 0.9375rem;
 }
 
-.workspace__notes p {
-  margin: 0 0 4px;
+.status {
+  margin: 0;
+  font-weight: 600;
 }
 
-.status {
-  font-weight: 600;
+/* Status, Reset and Download, below the settings. */
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: rgba(10, 16, 34, 0.94);
+  box-shadow: 0 0 24px rgba(59, 118, 246, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+}
+
+.action-bar__status .hint {
+  margin: 2px 0 0;
+}
+
+.action-bar__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* Controls */
@@ -425,12 +460,6 @@ a:hover {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 0.875rem;
-}
-
-.controls__actions {
-  display: grid;
-  gap: 12px;
-  margin-top: 8px;
 }
 
 input[type="range"] {
@@ -675,6 +704,13 @@ input[type="range"]::-moz-range-thumb {
   color: var(--muted);
 }
 
+/* The note under the media table. */
+.spec-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
 /* Footer */
 
 .site-footer {
@@ -772,18 +808,287 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.8125rem;
 }
 
-/* Dithering choice: radio buttons shown as one segmented bar */
+/* Settings panel in the style of the PS2 system menus */
 
-.segmented {
-  margin: 0 0 20px;
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-inset);
+}
+
+.tab {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-selected="true"] {
+  background: linear-gradient(180deg, rgba(59, 118, 246, 0.55), rgba(37, 99, 235, 0.25));
+  box-shadow: 0 0 16px rgba(59, 118, 246, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(122, 179, 255, 0.8);
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.presets {
+  margin: 0 0 16px;
   padding: 0;
   border: 0;
 }
 
-.segmented legend {
+.presets legend {
+  /* Floating the legend keeps it inside the box instead of on its top edge. */
+  float: left;
+  width: 100%;
   margin-bottom: 8px;
   padding: 0;
   font-weight: 600;
+}
+
+.presets legend + * {
+  clear: both;
+}
+
+.presets__tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.preset {
+  position: relative;
+  display: flex;
+}
+
+.preset input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preset__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface-inset);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.preset__body:hover {
+  border-color: var(--accent-bright);
+}
+
+.preset input:checked + .preset__body {
+  border-color: var(--accent-bright);
+  box-shadow: 0 0 0 1px var(--accent-bright), 0 0 18px rgba(122, 179, 255, 0.45);
+}
+
+.preset input:focus-visible + .preset__body {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.preset__swatch {
+  height: 26px;
+  border-radius: 4px;
+}
+
+.preset__swatch--clean {
+  background: linear-gradient(180deg, #8fb6e8 0%, #a9c6ea 45%, #c9a26b 55%, #7a5a36 100%);
+}
+
+.preset__swatch--colossus {
+  background: radial-gradient(circle at 50% 30%, #ffffff 0%, #e4eefc 35%, #a9bcd6 70%, #6f7c8c 100%);
+}
+
+.preset__swatch--silenthill {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, #d4d4d8 0%, #bdbdc2 55%, #6d6a66 100%);
+}
+
+.preset__swatch--snakeeater {
+  background: linear-gradient(180deg, #c9cf9a 0%, #9aa45e 50%, #4f5a2e 100%);
+}
+
+.preset__name {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.preset__hint {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.presets__custom {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.presets__chip {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 10px;
+  border: 1px solid var(--accent-bright);
+  border-radius: 999px;
+  color: var(--accent-bright);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(122, 179, 255, 0.35);
+}
+
+/* Each setting is a menu row that lights up like the highlighted item in a PS2 menu. */
+.menu-row {
+  margin: 0 -10px 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.menu-row:hover,
+.menu-row:focus-within {
+  background: linear-gradient(90deg, rgba(59, 118, 246, 0.28), rgba(59, 118, 246, 0.04));
+  box-shadow: inset 3px 0 0 var(--accent-bright);
+}
+
+.value-pill {
+  flex-shrink: 0;
+  align-self: flex-start;
+  white-space: nowrap;
+  min-width: 3.25em;
+  padding: 1px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: rgba(122, 179, 255, 0.12);
+  text-align: center;
+}
+
+input[type="range"].track-fog::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, #9cc0ea, #c8c8cd);
+}
+
+input[type="range"].track-fog::-moz-range-track {
+  background: linear-gradient(90deg, #9cc0ea, #c8c8cd);
+}
+
+input[type="range"].track-tint::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg, #96beff, #8a93a6 50%, #96aa50);
+}
+
+input[type="range"].track-tint::-moz-range-track {
+  background: linear-gradient(90deg, #96beff, #8a93a6 50%, #96aa50);
+}
+
+/* The transcript opens like a PS2 menu item. */
+.transcript {
+  max-width: 70ch;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-inset);
+}
+
+.transcript summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.transcript summary::-webkit-details-marker {
+  display: none;
+}
+
+.transcript summary::before {
+  content: "▸";
+  color: var(--accent-bright);
+  transition: transform 0.2s;
+}
+
+.transcript[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.transcript summary:hover {
+  background: linear-gradient(90deg, rgba(59, 118, 246, 0.28), rgba(59, 118, 246, 0.04));
+}
+
+.transcript summary h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.transcript .listen__transcript {
+  margin: 4px 14px 14px;
+}
+
+/* Scroll reveal: sections below the lab fade in as they're reached. */
+.reveal-on [data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-on [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Dithering choice: radio buttons shown as one segmented bar */
+
+.segmented {
+  /* Spacing comes from .menu-row, like every other settings row. */
+  min-width: 0;
+  border: 0;
+}
+
+.segmented.menu-row {
+  padding-bottom: 12px;
+}
+
+.segmented legend {
+  /* Floating the legend keeps it inside the highlight instead of on its top edge. */
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.segmented legend + * {
+  clear: both;
 }
 
 .segmented__options {
@@ -890,26 +1195,61 @@ input[type="range"]::-moz-range-thumb {
   .choose__actions .button {
     width: 100%;
   }
+
+  .action-bar {
+    padding: 10px 12px;
+  }
+
+  .action-bar__status .hint {
+    display: none;
+  }
+
+  .action-bar__buttons {
+    width: 100%;
+  }
+
+  .action-bar__buttons .button {
+    flex: 1;
+    padding-inline: 10px;
+  }
 }
 
 /* Tablets */
 
 @media (min-width: 640px) {
-  .workspace {
+  .workspace__stage {
     grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "original processed"
-      "notes notes"
-      "controls controls";
+  }
+
+  /* The PS2 screen's 10:7 shape saves height compared with a square. */
+  .preview__frame {
+    aspect-ratio: 10 / 7;
+  }
+
+  .tab-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 24px;
+  }
+
+  .tab-panel[hidden] {
+    display: none;
+  }
+
+  .tab-panel > .presets {
+    grid-column: 1 / -1;
+  }
+
+  .tab-panel > .menu-row {
+    margin: 0 0 6px;
+  }
+
+  .tabs {
+    max-width: 380px;
   }
 
   .cards {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .controls__actions {
-    grid-template-columns: repeat(3, auto);
-    justify-content: start;
   }
 }
 
@@ -925,24 +1265,24 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-/* Desktop: settings beside the previews */
+/* Desktop: three settings per row */
 
 @media (min-width: 1024px) {
-  .workspace {
-    grid-template-columns: 1fr 1fr 320px;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "original processed controls"
-      "notes notes controls";
-    align-items: start;
+  .tab-panel {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .controls__actions {
-    grid-template-columns: 1fr;
+  .presets__tiles {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 860px;
   }
 
   .learn__ideas {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .learn__ideas--pairs {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -956,6 +1296,15 @@ input[type="range"]::-moz-range-thumb {
   .preview__frame[aria-busy="true"] {
     animation: busy-pulse 1.2s ease-in-out infinite alternate;
   }
+
+  .preset input:checked + .preset__body {
+    animation: cursor-pulse 1.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes cursor-pulse {
+  from { box-shadow: 0 0 0 1px var(--accent-bright), 0 0 10px rgba(122, 179, 255, 0.3); }
+  to { box-shadow: 0 0 0 1px var(--accent-bright), 0 0 22px rgba(122, 179, 255, 0.6); }
 }
 
 @keyframes busy-pulse {
@@ -964,7 +1313,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .backdrop span {
+  /* Matches the specificity of the per-block rules so every block stops. */
+  .backdrop span:nth-child(n) {
     animation: none;
   }
 

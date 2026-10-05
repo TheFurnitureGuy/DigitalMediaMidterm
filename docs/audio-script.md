@@ -14,7 +14,7 @@ Quantization reduces that number. The image gets a small set of colors, called a
 
 With fewer colors, smooth areas like the sky start to show bands. Dithering helps with this. It places different palette colors next to each other in a pattern, and from a distance your eye blends them into a shade the palette doesn't have.
 
-Keep in mind that this changes the colors, not the size. Resolution sets how many pixels there are, and polygon detail sets how many triangles draw the photo.
+Keep in mind that this changes the colors, not the size. Resolution sets how many pixels there are. The look settings, like glow and fog, add new shades before the palette is chosen.
 
 ## Recording checklist
 

@@ -7,26 +7,45 @@
 
   var P = window.PhotoProcessor;
 
-  // The two large libraries load only when someone first picks an image.
+  // The large libraries load only when someone first picks an image.
   var LIBRARIES = [
     'assets/js/vendor/canvas-plus.js',
-    'assets/js/vendor/triangulate-image.min.js',
     'assets/js/vendor/pixi.min.js',
     'assets/js/vendor/pixi-filters.js'
   ];
 
   var SAMPLES = {
-    sunset: { url: 'assets/images/sample-sunset.webp', alt: 'Sunset over an open field', name: 'sunset' },
-    desert: { url: 'assets/images/sample-desert.png', alt: 'Flat-topped rock formations in a desert', name: 'desert' }
+    sunset: { url: 'assets/images/sample-sunset.webp', alt: 'Sunset over an open field', name: 'sample photo 1' },
+    desert: { url: 'assets/images/sample-desert.png', alt: 'Flat-topped rock formations in a desert', name: 'sample photo 2' }
   };
 
   var LEVELS = { 1: 'Low', 2: 'Medium', 3: 'High' };
 
   var DEFAULTS = {
-    polygonDetail: 2,
     resolution: 2,
     paletteIndex: P.PALETTE_SIZES.indexOf(64),
-    dither: 'ordered'
+    dither: 'ordered',
+    look: Object.assign({}, P.LOOK_PRESETS.clean)
+  };
+
+  var PRESET_NAMES = {
+    clean: 'Clean',
+    colossus: 'Shadow of the Colossus',
+    silenthill: 'Silent Hill 2',
+    snakeeater: 'Snake Eater'
+  };
+
+  // Look slider ids, keyed by the look value they set.
+  var LOOK_INPUT_IDS = {
+    glow: 'glow',
+    fogAmount: 'fog-amount',
+    fogColor: 'fog-color',
+    color: 'color-strength',
+    brightness: 'brightness',
+    softness: 'softness',
+    tint: 'tint',
+    grain: 'grain',
+    tv: 'tv'
   };
 
   var DITHER_NAMES = {
@@ -39,7 +58,6 @@
     opening: 'Opening your image…',
     applying: 'Applying your settings',
     ready: 'Your image is ready.',
-    changed: 'Apply changes to update the preview.',
     failed: 'We couldn’t process this image. Try a smaller JPG, PNG or WebP, or choose a sample.',
     trySample: 'You can also try a sample.',
     noTools: 'The image tools didn’t load. Check your connection and try again.'
@@ -53,22 +71,28 @@
     originalFrame: document.getElementById('original-frame'),
     processedFrame: document.getElementById('processed-frame'),
     status: document.getElementById('status'),
-    polygon: document.getElementById('polygon-detail'),
-    polygonValue: document.getElementById('polygon-detail-value'),
     resolution: document.getElementById('output-resolution'),
     resolutionValue: document.getElementById('output-resolution-value'),
     palette: document.getElementById('palette-size'),
     paletteValue: document.getElementById('palette-size-value'),
     ditherInputs: document.querySelectorAll('input[name="dithering"]'),
-    apply: document.getElementById('apply'),
     reset: document.getElementById('reset'),
     download: document.getElementById('download'),
     paletteCount: document.getElementById('palette-count'),
     swatches: document.getElementById('palette-swatches'),
     readout: document.getElementById('palette-readout'),
     motionControls: document.getElementById('motion-controls'),
-    motionToggle: document.getElementById('motion-toggle')
+    motionToggle: document.getElementById('motion-toggle'),
+    presetInputs: document.querySelectorAll('input[name="preset"]'),
+    presetCustom: document.getElementById('preset-custom'),
+    tabs: document.querySelectorAll('[role="tab"]'),
+    lookInputs: {},
+    lookValues: {}
   };
+  Object.keys(LOOK_INPUT_IDS).forEach(function (key) {
+    el.lookInputs[key] = document.getElementById(LOOK_INPUT_IDS[key]);
+    el.lookValues[key] = document.getElementById(LOOK_INPUT_IDS[key] + '-value');
+  });
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -81,6 +105,7 @@
     originalUrl: null,  // object URL of an uploaded photo's preview
     palette: [],
     busy: false,
+    pending: false,     // a change arrived while processing; apply it when done
     motion: {
       available: false,  // the animated preview is ready for the current result
       playing: false,
@@ -124,20 +149,44 @@
   /* Settings */
 
   function readSettings() {
+    var look = {};
+    P.LOOK_KEYS.forEach(function (key) { look[key] = Number(el.lookInputs[key].value); });
     return {
-      polygonDetail: Number(el.polygon.value),
       resolution: Number(el.resolution.value),
       paletteIndex: Number(el.palette.value),
-      dither: document.querySelector('input[name="dithering"]:checked').value
+      dither: document.querySelector('input[name="dithering"]:checked').value,
+      look: look
     };
   }
 
   function sameSettings(a, b) {
     return !!a && !!b &&
-      a.polygonDetail === b.polygonDetail &&
       a.resolution === b.resolution &&
       a.paletteIndex === b.paletteIndex &&
-      a.dither === b.dither;
+      a.dither === b.dither &&
+      sameLook(a.look, b.look);
+  }
+
+  function sameLook(a, b) {
+    return P.LOOK_KEYS.every(function (key) { return a[key] === b[key]; });
+  }
+
+  // The preset whose values match the sliders exactly, or null for a custom look.
+  function matchingPreset(look) {
+    var names = Object.keys(P.LOOK_PRESETS);
+    for (var i = 0; i < names.length; i++) {
+      if (sameLook(look, P.LOOK_PRESETS[names[i]])) return names[i];
+    }
+    return null;
+  }
+
+  function lookName(look) {
+    var preset = matchingPreset(look);
+    return preset ? PRESET_NAMES[preset] : 'Custom';
+  }
+
+  function setLook(look) {
+    P.LOOK_KEYS.forEach(function (key) { el.lookInputs[key].value = look[key]; });
   }
 
   function setDither(mode) {
@@ -149,19 +198,23 @@
   function updateLabels() {
     var s = readSettings();
     var colors = P.PALETTE_SIZES[s.paletteIndex] + ' colors';
-    el.polygonValue.textContent = LEVELS[s.polygonDetail];
-    el.polygon.setAttribute('aria-valuetext', LEVELS[s.polygonDetail]);
     el.resolutionValue.textContent = LEVELS[s.resolution];
     el.resolution.setAttribute('aria-valuetext', LEVELS[s.resolution]);
     el.paletteValue.textContent = colors;
     el.palette.setAttribute('aria-valuetext', colors);
+    P.LOOK_KEYS.forEach(function (key) { el.lookValues[key].textContent = s.look[key]; });
+
+    // Light up the matching preset tile, or show Custom when the sliders match none.
+    var preset = matchingPreset(s.look);
+    el.presetInputs.forEach(function (input) { input.checked = input.value === preset; });
+    el.presetCustom.hidden = !!preset;
   }
 
   function writeSettings(s) {
-    el.polygon.value = s.polygonDetail;
     el.resolution.value = s.resolution;
     el.palette.value = s.paletteIndex;
     setDither(s.dither);
+    setLook(s.look);
     updateLabels();
   }
 
@@ -175,7 +228,6 @@
     var hasImage = !!state.image;
     var resultMatches = !!state.result && sameSettings(readSettings(), state.applied);
 
-    el.apply.disabled = state.busy || !hasImage;
     el.reset.disabled = state.busy || !hasImage;
     el.download.disabled = state.busy || !resultMatches;
     el.sunset.disabled = state.busy;
@@ -185,12 +237,22 @@
     el.motionToggle.disabled = state.busy;
   }
 
+  // Runs while a slider moves: updates the labels only. Processing waits for requestApply.
   function onSettingsChange() {
     updateLabels();
-    if (state.image && state.result && !state.busy) {
-      setStatus(sameSettings(readSettings(), state.applied) ? MESSAGES.ready : MESSAGES.changed);
-    }
     updateButtons();
+  }
+
+  // Changes apply on their own. If an image is already processing, only the
+  // latest settings run once it finishes, so quick changes don't pile up.
+  function requestApply() {
+    if (!state.image) return;
+    if (state.busy) {
+      state.pending = true;
+      return;
+    }
+    if (state.result && sameSettings(readSettings(), state.applied)) return;
+    applySettings();
   }
 
   /* Previews */
@@ -324,11 +386,11 @@
     updateMotionControls();
   }
 
-  async function showResult(prepared) {
+  async function showResult(prepared, screen) {
     state.motion.available = false;
     if (window.ScreenPreview && ScreenPreview.supported()) {
       try {
-        await ScreenPreview.load(prepared, state.result.label + ', with a moving TV effect in full color');
+        await ScreenPreview.load(prepared, state.result.label + ', with a moving TV effect in full color', screen);
         state.motion.available = true;
       } catch (err) {
         state.motion.available = false;
@@ -368,18 +430,19 @@
 
     try {
       var result = await P.processImage(getResized(settings.resolution), {
-        polygonDetail: settings.polygonDetail,
+        resolution: settings.resolution,
         colors: colors,
-        dither: settings.dither
+        dither: settings.dither,
+        look: settings.look
       });
       clearResult();
       state.result = {
         url: URL.createObjectURL(result.blob),
         colors: colors,
-        label: 'Processed ' + state.name + ', ' + colors + ' colors, ' + DITHER_NAMES[settings.dither]
+        label: 'Processed ' + state.name + ', ' + lookName(settings.look) + ' look, ' + colors + ' colors, ' + DITHER_NAMES[settings.dither]
       };
       state.applied = settings;
-      await showResult(result.prepared);
+      await showResult(result.prepared, result.screen);
       renderPalette(result.palette, colors);
       setStatus(MESSAGES.ready);
     } catch (err) {
@@ -389,6 +452,10 @@
       state.busy = false;
       el.processedFrame.removeAttribute('aria-busy');
       updateButtons();
+    }
+    if (state.pending) {
+      state.pending = false;
+      requestApply();
     }
   }
 
@@ -463,17 +530,60 @@
   el.sunset.addEventListener('click', function () { chooseImage(SAMPLES.sunset.url, SAMPLES.sunset); });
   el.desert.addEventListener('click', function () { chooseImage(SAMPLES.desert.url, SAMPLES.desert); });
 
-  [el.polygon, el.resolution, el.palette].forEach(function (input) {
-    input.addEventListener('input', onSettingsChange);
-  });
+  // Labels update while a slider moves. The change applies when the slider is let go.
+  [el.resolution, el.palette].concat(P.LOOK_KEYS.map(function (key) { return el.lookInputs[key]; }))
+    .forEach(function (input) {
+      input.addEventListener('input', onSettingsChange);
+      input.addEventListener('change', requestApply);
+    });
   el.ditherInputs.forEach(function (input) {
-    input.addEventListener('change', onSettingsChange);
+    input.addEventListener('change', function () {
+      onSettingsChange();
+      requestApply();
+    });
   });
 
-  el.apply.addEventListener('click', applySettings);
+  // Picking a preset moves the look sliders to its values.
+  el.presetInputs.forEach(function (input) {
+    input.addEventListener('change', function () {
+      if (!input.checked) return;
+      setLook(P.LOOK_PRESETS[input.value]);
+      onSettingsChange();
+      requestApply();
+    });
+  });
+
+  /* Settings tabs (Look and Colors), with arrow keys between them */
+
+  function selectTab(tab, focus) {
+    el.tabs.forEach(function (t) {
+      var selected = t === tab;
+      t.setAttribute('aria-selected', selected ? 'true' : 'false');
+      t.tabIndex = selected ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !selected;
+    });
+    if (focus) tab.focus();
+  }
+
+  el.tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { selectTab(tab, false); });
+    tab.addEventListener('keydown', function (event) {
+      var last = el.tabs.length - 1;
+      var next = null;
+      if (event.key === 'ArrowRight') next = i === last ? 0 : i + 1;
+      else if (event.key === 'ArrowLeft') next = i === 0 ? last : i - 1;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = last;
+      if (next === null) return;
+      event.preventDefault();
+      selectTab(el.tabs[next], true);
+    });
+  });
+
   el.reset.addEventListener('click', function () {
     writeSettings(DEFAULTS);
     onSettingsChange();
+    requestApply();
   });
   el.download.addEventListener('click', onDownload);
   el.motionToggle.addEventListener('click', onMotionToggle);

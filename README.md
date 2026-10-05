@@ -33,7 +33,6 @@ docs/             audio script (not deployed)
 | File | Source | Version | License |
 | --- | --- | --- | --- |
 | `assets/js/vendor/canvas-plus.js` | github.com/jhuckaby/canvas-plus (npm: pixl-canvas-plus) | commit e96e76eafd189f5413bfc856fa001702f843f86c | MIT |
-| `assets/js/vendor/triangulate-image.min.js` | github.com/snorpey/triangulate-image | 0.6.6 | MIT |
 | `assets/js/vendor/pixi.min.js` | PixiJS, pixijs.com | 8.22.0 | MIT |
 | `assets/js/vendor/pixi-filters.js` | github.com/pixijs/filters | 6.1.5 | MIT |
 | `assets/fonts/inter-latin-wght-normal.woff2` | Inter by Rasmus Andersson, via @fontsource-variable/inter | 5.3.0 | SIL OFL 1.1 |
@@ -46,8 +45,8 @@ Both sample photos come from Pexels and are used under the Pexels license.
 
 | Photo | Photographer | Source |
 | --- | --- | --- |
-| Sunset over an open field | Guilherme Stecanella | https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/ |
-| Rock formations in a desert | Radis B | https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/ |
+| Sample photo 1: sunset over an open field | Guilherme Stecanella | https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/ |
+| Sample photo 2: rock formations in a desert | Radis B | https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/ |
 
 ## Deployment
 
