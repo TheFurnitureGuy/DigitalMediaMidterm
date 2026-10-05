@@ -73,6 +73,10 @@
           <div class="preview__frame" id="processed-frame">
             <p class="preview__empty">No image yet</p>
           </div>
+          <div class="preview__motion" id="motion-controls" hidden>
+            <button class="button button--secondary" type="button" id="motion-toggle">Pause TV effect</button>
+            <p class="preview__note">The moving TV effect is shown in full color. Pause it to see the exact image you’ll download.</p>
+          </div>
         </figure>
 
         <div class="workspace__notes">
@@ -385,12 +389,13 @@
     <div class="container">
       <p class="site-footer__lead">Creates a flat image with a PS2-inspired effect. No AI is used, and your photos stay in your browser.</p>
       <p>Sample photos from Pexels: sunset by <a href="https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/">Guilherme Stecanella</a>, desert by <a href="https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/">Radis B</a>.</p>
-      <p>Image processing by <a href="https://github.com/jhuckaby/canvas-plus">canvas-plus</a> and <a href="https://github.com/snorpey/triangulate-image">triangulate-image</a>. Text set in <a href="https://rsms.me/inter/">Inter</a>.</p>
+      <p>Image processing by <a href="https://github.com/jhuckaby/canvas-plus">canvas-plus</a> and <a href="https://github.com/snorpey/triangulate-image">triangulate-image</a>. Screen effects by <a href="https://pixijs.com/">PixiJS</a> and <a href="https://github.com/pixijs/filters">pixi-filters</a>. Text set in <a href="https://rsms.me/inter/">Inter</a>.</p>
       <p>Not affiliated with Sony Interactive Entertainment.</p>
     </div>
   </footer>
 
   <script src="assets/js/processor.js" defer></script>
+  <script src="assets/js/screen-preview.js" defer></script>
   <script src="assets/js/app.js" defer></script>
 </body>
 </html>

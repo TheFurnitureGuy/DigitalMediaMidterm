@@ -34,6 +34,8 @@ docs/             audio script (not deployed)
 | --- | --- | --- | --- |
 | `assets/js/vendor/canvas-plus.js` | github.com/jhuckaby/canvas-plus (npm: pixl-canvas-plus) | commit e96e76eafd189f5413bfc856fa001702f843f86c | MIT |
 | `assets/js/vendor/triangulate-image.min.js` | github.com/snorpey/triangulate-image | 0.6.6 | MIT |
+| `assets/js/vendor/pixi.min.js` | PixiJS, pixijs.com | 8.22.0 | MIT |
+| `assets/js/vendor/pixi-filters.js` | github.com/pixijs/filters | 6.1.5 | MIT |
 | `assets/fonts/inter-latin-wght-normal.woff2` | Inter by Rasmus Andersson, via @fontsource-variable/inter | 5.3.0 | SIL OFL 1.1 |
 
 Each license file sits next to its library or font.

@@ -751,6 +751,27 @@ input[type="range"]::-moz-range-thumb {
   font-variant-numeric: tabular-nums;
 }
 
+/* Animated preview controls */
+
+.preview__motion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+.preview__motion[hidden] {
+  display: none;
+}
+
+.preview__note {
+  flex: 1 1 200px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
 /* Dithering choice: radio buttons shown as one segmented bar */
 
 .segmented {

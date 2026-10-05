@@ -10,7 +10,9 @@
   // The two large libraries load only when someone first picks an image.
   var LIBRARIES = [
     'assets/js/vendor/canvas-plus.js',
-    'assets/js/vendor/triangulate-image.min.js'
+    'assets/js/vendor/triangulate-image.min.js',
+    'assets/js/vendor/pixi.min.js',
+    'assets/js/vendor/pixi-filters.js'
   ];
 
   var SAMPLES = {
@@ -63,8 +65,12 @@
     download: document.getElementById('download'),
     paletteCount: document.getElementById('palette-count'),
     swatches: document.getElementById('palette-swatches'),
-    readout: document.getElementById('palette-readout')
+    readout: document.getElementById('palette-readout'),
+    motionControls: document.getElementById('motion-controls'),
+    motionToggle: document.getElementById('motion-toggle')
   };
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   var state = {
     image: null,        // full-size CanvasPlus image
@@ -74,7 +80,12 @@
     result: null,       // { url, colors } of the current result
     originalUrl: null,  // object URL of an uploaded photo's preview
     palette: [],
-    busy: false
+    busy: false,
+    motion: {
+      available: false,  // the animated preview is ready for the current result
+      playing: false,
+      userPaused: false  // remembered, so a new result doesn't restart motion
+    }
   };
 
   /* Loading the libraries */
@@ -171,6 +182,7 @@
     el.desert.disabled = state.busy;
     el.upload.disabled = state.busy;
     el.uploadLabel.classList.toggle('is-disabled', state.busy);
+    el.motionToggle.disabled = state.busy;
   }
 
   function onSettingsChange() {
@@ -293,7 +305,49 @@
 
   /* Result */
 
+  /* Animated preview */
+
+  function updateMotionControls() {
+    el.motionControls.hidden = !state.motion.available;
+    el.motionToggle.textContent = state.motion.playing ? 'Pause TV effect' : 'Play TV effect';
+  }
+
+  // Playing shows the moving full-color preview. Paused shows the exact PNG you download.
+  function setMotion(play) {
+    state.motion.playing = play;
+    if (play) {
+      ScreenPreview.start(el.processedFrame);
+    } else {
+      if (state.motion.available) ScreenPreview.stop();
+      showImage(el.processedFrame, state.result.url, state.result.label, false);
+    }
+    updateMotionControls();
+  }
+
+  async function showResult(prepared) {
+    state.motion.available = false;
+    if (window.ScreenPreview && ScreenPreview.supported()) {
+      try {
+        await ScreenPreview.load(prepared, state.result.label + ', with a moving TV effect in full color');
+        state.motion.available = true;
+      } catch (err) {
+        state.motion.available = false;
+      }
+    }
+    setMotion(state.motion.available && !state.motion.userPaused && !reducedMotion.matches);
+  }
+
+  function onMotionToggle() {
+    if (!state.result || !state.motion.available) return;
+    state.motion.userPaused = state.motion.playing;
+    setMotion(!state.motion.playing);
+  }
+
   function clearResult() {
+    if (window.ScreenPreview) ScreenPreview.clear();
+    state.motion.available = false;
+    state.motion.playing = false;
+    updateMotionControls();
     if (state.result) URL.revokeObjectURL(state.result.url);
     state.result = null;
     state.applied = null;
@@ -319,10 +373,13 @@
         dither: settings.dither
       });
       clearResult();
-      state.result = { url: URL.createObjectURL(result.blob), colors: colors };
+      state.result = {
+        url: URL.createObjectURL(result.blob),
+        colors: colors,
+        label: 'Processed ' + state.name + ', ' + colors + ' colors, ' + DITHER_NAMES[settings.dither]
+      };
       state.applied = settings;
-      showImage(el.processedFrame, state.result.url,
-        'Processed ' + state.name + ', ' + colors + ' colors, ' + DITHER_NAMES[settings.dither], false);
+      await showResult(result.prepared);
       renderPalette(result.palette, colors);
       setStatus(MESSAGES.ready);
     } catch (err) {
@@ -419,6 +476,7 @@
     onSettingsChange();
   });
   el.download.addEventListener('click', onDownload);
+  el.motionToggle.addEventListener('click', onMotionToggle);
 
   el.swatches.addEventListener('click', function (event) {
     var button = event.target.closest('.palette__swatch');

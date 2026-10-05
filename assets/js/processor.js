@@ -42,7 +42,18 @@
     triangleOpacity: 0.4
   };
 
-  // PS2-era screen effects, applied after the color preset and before palette reduction.
+  // PS2-era screen look from pixi-filters, applied after the color preset and
+  // before palette reduction. The animated preview uses the same values.
+  var SCREEN = {
+    bloom: { threshold: 0.85, bloomScale: 0.25, brightness: 1, blur: 4, quality: 4 },
+    rgbSplit: { red: { x: -1, y: 0 }, green: { x: 0, y: 0 }, blue: { x: 1, y: 0 } },
+    crt: {
+      curvature: 2, lineWidth: 1, lineContrast: 0.15, noise: 0.12, noiseSize: 1,
+      vignetting: 0.3, vignettingAlpha: 0.5, vignettingBlur: 0.3, time: 0, seed: 0.5
+    }
+  };
+
+  // Canvas versions of the screen effects. Used only when WebGL or PixiJS isn't available.
   var EFFECTS = {
     // Bright areas glow. threshold: brightness (0-255) where the glow starts.
     // strength: how much of the glow is added. blur: how far the glow spreads.
@@ -240,6 +251,81 @@
     ctx.putImageData(image, 0, 0);
   }
 
+  function copyCanvas(source) {
+    var c = makeCanvas(source.width, source.height);
+    c.getContext('2d').drawImage(source, 0, 0);
+    return c;
+  }
+
+  // Builds the pixi-filters chain: glow, red and blue split, then the CRT screen.
+  function makeScreenFilters() {
+    return [
+      new PIXI.filters.AdvancedBloomFilter(Object.assign({}, SCREEN.bloom)),
+      new PIXI.filters.RGBSplitFilter(JSON.parse(JSON.stringify(SCREEN.rgbSplit))),
+      new PIXI.filters.CRTFilter(Object.assign({}, SCREEN.crt))
+    ];
+  }
+
+  var screenRenderer = null; // a hidden PixiJS renderer, created once and reused
+  var screenFailed = false;  // set when PixiJS couldn't start, so it isn't retried
+
+  function pixiAvailable() {
+    return !screenFailed && typeof PIXI !== 'undefined' && !!PIXI.filters;
+  }
+
+  // PixiJS quietly falls back to a Canvas2D renderer without WebGL, and that
+  // renderer skips every filter. Only WebGL and WebGPU can run the screen effects.
+  function usesGpu(app) {
+    var types = PIXI.RendererType;
+    return app.renderer.type === types.WEBGL || app.renderer.type === types.WEBGPU;
+  }
+
+  function getScreenRenderer() {
+    if (!screenRenderer) {
+      var app = new PIXI.Application();
+      screenRenderer = app.init({ width: 16, height: 16, preference: 'webgl', backgroundAlpha: 1, antialias: false, autoStart: false })
+        .then(function () {
+          if (!usesGpu(app)) {
+            app.destroy();
+            throw new Error('No WebGL or WebGPU');
+          }
+          return app;
+        })
+        .catch(function (err) {
+          screenRenderer = null;
+          screenFailed = true;
+          throw err;
+        });
+    }
+    return screenRenderer;
+  }
+
+  // Renders the image once through pixi-filters and puts the result back into canvas-plus.
+  async function applyScreenPixi(canvas) {
+    var app = await getScreenRenderer();
+    var width = canvas.get('width');
+    var height = canvas.get('height');
+    var area = new PIXI.Rectangle(0, 0, width, height);
+
+    app.renderer.resize(width, height);
+    // A fresh copy with skipCache, so PixiJS never reuses an older texture.
+    var sprite = new PIXI.Sprite(PIXI.Texture.from(copyCanvas(canvas.getCanvas()), true));
+    var filters = makeScreenFilters();
+    sprite.filters = filters;
+    sprite.filterArea = area;
+    app.stage.addChild(sprite);
+
+    try {
+      var extracted = app.renderer.extract.canvas({ target: app.stage, frame: area });
+      canvas.importCanvas(copyCanvas(extracted));
+    } finally {
+      // Free the GPU memory used by this run.
+      app.stage.removeChild(sprite);
+      filters.forEach(function (f) { f.destroy(); });
+      sprite.destroy({ texture: true, textureSource: true });
+    }
+  }
+
   function writePng(canvas) {
     return new Promise(function (resolve, reject) {
       canvas.write({ format: 'png' }, function (err, buf) {
@@ -251,8 +337,8 @@
 
   /*
    * Runs the filter on a copy of a resized image.
-   * Order: triangles, color preset, bloom, CRT look, ordered pattern (if chosen),
-   * palette reduction, export.
+   * Order: triangles, color preset, screen effects (pixi-filters, or the canvas
+   * versions without WebGL), ordered pattern (if chosen), palette reduction, export.
    * Palette reduction must come last, or canvas-plus turns the image back into full color.
    */
   async function processImage(resized, options) {
@@ -280,9 +366,23 @@
     checkStep(canvas, 'Color temperature');
     timings.colors = now() - t;
 
+    // The full-color image before screen effects, for the animated preview.
+    var prepared = copyCanvas(canvas.getCanvas());
+
     t = now();
-    if (EFFECTS.bloom.enabled) applyBloom(canvas);
-    if (EFFECTS.crt.enabled) applyCrt(canvas);
+    var renderer = 'canvas';
+    if (pixiAvailable()) {
+      try {
+        await applyScreenPixi(canvas);
+        renderer = 'pixi';
+      } catch (err) {
+        screenFailed = true;
+      }
+    }
+    if (renderer === 'canvas') {
+      if (EFFECTS.bloom.enabled) applyBloom(canvas);
+      if (EFFECTS.crt.enabled) applyCrt(canvas);
+    }
     if (dither === 'ordered') applyOrderedPattern(canvas, options.colors);
     checkStep(canvas, 'Screen effects');
     timings.effects = now() - t;
@@ -306,6 +406,8 @@
       palette: palette,
       width: canvas.get('width'),
       height: canvas.get('height'),
+      prepared: prepared,
+      renderer: renderer,
       timings: timings
     };
   }
@@ -315,7 +417,10 @@
     RESOLUTION: RESOLUTION,
     POLYGON_DETAIL: POLYGON_DETAIL,
     BLEND: BLEND,
+    SCREEN: SCREEN,
     EFFECTS: EFFECTS,
+    makeScreenFilters: makeScreenFilters,
+    usesGpu: usesGpu,
     ORDERED: ORDERED,
     DITHER_MODES: DITHER_MODES,
     PALETTE_SIZES: PALETTE_SIZES,
