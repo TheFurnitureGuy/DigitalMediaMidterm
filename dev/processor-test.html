@@ -77,6 +77,25 @@
       });
     }
 
+    // ?runs=strength compares lighter triangle strengths against the untouched photo.
+    if (query.get('runs') === 'strength') {
+      RUNS = [];
+      var STRENGTHS = [
+        { name: 'Original photo (unprocessed)', original: true },
+        { name: 'Photo only: preset and 64 colors, no triangles', polygonDetail: 2, opacity: 0 },
+        { name: 'Triangles at 40%, 1200 points', polygonDetail: 2, opacity: 0.4 },
+        { name: 'Triangles at 30%, 1200 points', polygonDetail: 2, opacity: 0.3 },
+        { name: 'Triangles at 20%, 1200 points', polygonDetail: 2, opacity: 0.2 },
+        { name: 'Triangles at 10%, 1200 points', polygonDetail: 2, opacity: 0.1 },
+        { name: 'Triangles at 30%, 300 points (Low detail)', polygonDetail: 1, opacity: 0.3 }
+      ];
+      STRENGTHS.forEach(function (v) {
+        ['sunset', 'desert'].forEach(function (photo) {
+          RUNS.push({ group: v.name, photo: photo, resolution: 2, polygonDetail: v.polygonDetail || 2, colors: 64, dither: false, opacity: v.opacity, original: !!v.original });
+        });
+      });
+    }
+
     function ms(n) { return Math.round(n) + ' ms'; }
     function kb(n) { return (n / 1024).toFixed(1) + ' KB'; }
 
@@ -109,6 +128,20 @@
           row = document.createElement('div');
           row.className = 'row';
           out.appendChild(row);
+        }
+
+        if (r.original) {
+          var ofig = document.createElement('figure');
+          var oimg = document.createElement('img');
+          oimg.src = PHOTOS[r.photo];
+          oimg.alt = r.photo + ' original';
+          oimg.style.imageRendering = 'auto';
+          var ocap = document.createElement('figcaption');
+          ocap.innerHTML = '<b>' + r.photo + ' · original</b>';
+          ofig.appendChild(oimg);
+          ofig.appendChild(ocap);
+          row.appendChild(ofig);
+          continue;
         }
 
         var key = r.photo + r.resolution;

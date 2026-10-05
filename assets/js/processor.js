@@ -39,7 +39,7 @@
 
   // How strongly the triangles cover the photo, from 0 (photo only) to 1 (triangles only).
   var BLEND = {
-    triangleOpacity: 0.6
+    triangleOpacity: 0.4
   };
 
   function fail(message) {
