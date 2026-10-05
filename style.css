@@ -1066,6 +1066,133 @@ input[type="range"].track-tint::-moz-range-track {
   transform: none;
 }
 
+/* Line icons (Lucide), drawn in the current text color */
+
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: filter 0.2s;
+}
+
+.button {
+  gap: 8px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.control__head label,
+.segmented legend,
+.learn__ideas h3,
+.card h3,
+.listen h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control__head label .icon,
+.segmented legend > .icon,
+.learn__ideas h3 .icon,
+.card h3 .icon,
+.listen h2 .icon {
+  color: var(--accent-bright);
+}
+
+/* Icons glow on hover and focus, like the PS2 menu. */
+.button:hover .icon,
+.button:focus-visible .icon,
+.tab[aria-selected="true"] .icon,
+.menu-row:hover .control__head .icon,
+.menu-row:focus-within .control__head .icon {
+  filter: drop-shadow(0 0 4px rgba(122, 179, 255, 0.85));
+}
+
+/* Help text on demand: an (i) button beside each label opens a small floating box. */
+.info-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-right: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.info-btn:hover,
+.info-btn[aria-expanded="true"] {
+  background: rgba(122, 179, 255, 0.14);
+  color: var(--accent-bright);
+}
+
+.info-btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.control__head {
+  align-items: center;
+}
+
+.menu-row {
+  position: relative;
+}
+
+.control__help--pop {
+  position: absolute;
+  top: calc(100% - 6px);
+  right: 10px;
+  left: 10px;
+  z-index: 20;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: #0b1430;
+  box-shadow: 0 0 18px rgba(59, 118, 246, 0.35), 0 8px 20px rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  pointer-events: none;
+}
+
+/* Keyboard focus (not mouse clicks) also shows the help. */
+.menu-row:hover .control__help--pop,
+.menu-row:has(:focus-visible) .control__help--pop,
+.menu-row.is-help-open .control__help--pop {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.menu-row.help-hidden .control__help--pop {
+  opacity: 0;
+  visibility: hidden;
+}
+
 /* Dithering choice: radio buttons shown as one segmented bar */
 
 .segmented {

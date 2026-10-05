@@ -371,7 +371,9 @@
 
   function updateMotionControls() {
     el.motionControls.hidden = !state.motion.available;
-    el.motionToggle.textContent = state.motion.playing ? 'Pause TV effect' : 'Play TV effect';
+    // Swap the label and the icon together.
+    el.motionToggle.querySelector('.motion-toggle__label').textContent = state.motion.playing ? 'Pause TV effect' : 'Play TV effect';
+    el.motionToggle.querySelector('use').setAttribute('href', state.motion.playing ? '#i-pause' : '#i-play');
   }
 
   // Playing shows the moving full-color preview. Paused shows the exact PNG you download.
@@ -550,6 +552,48 @@
       setLook(P.LOOK_PRESETS[input.value]);
       onSettingsChange();
       requestApply();
+    });
+  });
+
+  /* Help text on demand: each (i) button opens or closes its help box */
+
+  var infoButtons = document.querySelectorAll('.info-btn');
+
+  function closeHelp(except) {
+    infoButtons.forEach(function (button) {
+      if (button === except) return;
+      button.setAttribute('aria-expanded', 'false');
+      button.closest('.menu-row').classList.remove('is-help-open');
+    });
+  }
+
+  infoButtons.forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var open = button.getAttribute('aria-expanded') !== 'true';
+      closeHelp(button);
+      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var row = button.closest('.menu-row');
+      row.classList.toggle('is-help-open', open);
+      // Closing with the button hides the help even though the button still has focus.
+      row.classList.toggle('help-hidden', !open);
+    });
+  });
+
+  // Tapping anywhere else or pressing Escape closes an open help box.
+  document.addEventListener('click', function () { closeHelp(null); });
+  // Escape also hides the help shown on hover or focus, until the pointer or focus leaves that row.
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    closeHelp(null);
+    document.querySelectorAll('.menu-row').forEach(function (row) {
+      if (row.matches(':hover') || row.contains(document.activeElement)) row.classList.add('help-hidden');
+    });
+  });
+  document.querySelectorAll('.menu-row').forEach(function (row) {
+    row.addEventListener('mouseleave', function () { row.classList.remove('help-hidden'); });
+    row.addEventListener('focusout', function (event) {
+      if (!row.contains(event.relatedTarget)) row.classList.remove('help-hidden');
     });
   });
 

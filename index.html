@@ -11,6 +11,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Icons from Lucide (lucide.dev), ISC license: assets/icons/LUCIDE-LICENSE.txt -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></symbol>
+    <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1" /> <rect x="5" y="3" width="5" height="18" rx="1" /></symbol>
+    <symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><path d="M10 5H3" /> <path d="M12 19H3" /> <path d="M14 3v4" /> <path d="M16 17v4" /> <path d="M21 12h-9" /> <path d="M21 19h-5" /> <path d="M21 5h-7" /> <path d="M8 10v4" /> <path d="M8 12H3" /></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z" /> <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /> <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /> <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /> <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /> <path d="M20 2v4" /> <path d="M22 4h-4" /> <circle cx="4" cy="20" r="2" /></symbol>
+    <symbol id="i-cloud-fog" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" /> <path d="M16 17H7" /> <path d="M17 21H9" /></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></symbol>
+    <symbol id="i-blend" viewBox="0 0 24 24"><circle cx="15" cy="9" r="7" /> <circle cx="9" cy="15" r="7" /></symbol>
+    <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1" /> <circle cx="19" cy="5" r="1" /> <circle cx="5" cy="5" r="1" /> <circle cx="12" cy="12" r="1" /> <circle cx="19" cy="12" r="1" /> <circle cx="5" cy="12" r="1" /> <circle cx="12" cy="19" r="1" /> <circle cx="19" cy="19" r="1" /> <circle cx="5" cy="19" r="1" /></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24"><path d="m17 2-5 5-5-5" /> <rect width="20" height="15" x="2" y="7" rx="2" /></symbol>
+    <symbol id="i-grid-3x3" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" /> <path d="M3 9h18" /> <path d="M3 15h18" /> <path d="M9 3v18" /> <path d="M15 3v18" /></symbol>
+    <symbol id="i-droplets" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" /> <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" /></symbol>
+    <symbol id="i-grid-2x2" viewBox="0 0 24 24"><path d="M12 3v18" /> <path d="M3 12h18" /> <rect x="3" y="3" width="18" height="18" rx="2" /></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" /></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
+  </svg>
   <a class="skip-link" href="#lab">Skip to the photo lab</a>
 
   <div class="backdrop" aria-hidden="true">
@@ -37,7 +61,7 @@
     <section class="intro container" aria-labelledby="intro-title">
       <p class="eyebrow">Learn how digital color works</p>
       <h1 id="intro-title">Give your photo a retro look.</h1>
-      <p class="intro__lead">Adjust your photo’s look and colors, compare the result, and learn how reducing colors changes an image.</p>
+      <p class="intro__lead">Restyle a photo, compare it with the original, and see how fewer colors change an image.</p>
     </section>
 
     <section id="lab" class="lab container" aria-label="Photo lab">
@@ -47,6 +71,7 @@
         <div class="choose__actions">
           <label class="button upload">
             <input class="visually-hidden" type="file" id="upload-input" accept="image/jpeg,image/png,image/webp">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-upload"></use></svg>
             Upload photo
           </label>
           <button class="button button--sample" type="button" id="sample-sunset">
@@ -76,8 +101,8 @@
             <p class="preview__empty">No image yet</p>
           </div>
           <div class="preview__motion" id="motion-controls" hidden>
-            <button class="button button--secondary" type="button" id="motion-toggle">Pause TV effect</button>
-            <p class="preview__note">The moving TV effect is shown in full color. Pause it to see the exact image you’ll download.</p>
+            <button class="button button--secondary" type="button" id="motion-toggle"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"></use></svg><span class="motion-toggle__label">Pause TV effect</span></button>
+            <p class="preview__note">The moving preview is in full color. Pause it to see the exact file you’ll download.</p>
           </div>
         </figure>
 
@@ -86,8 +111,8 @@
         <section class="panel controls" aria-labelledby="controls-title">
           <h2 id="controls-title">Adjust the effect</h2>
           <div class="tabs" role="tablist" aria-label="Settings">
-            <button class="tab" type="button" role="tab" id="tab-look" aria-selected="true" aria-controls="panel-look">Look</button>
-            <button class="tab" type="button" role="tab" id="tab-colors" aria-selected="false" aria-controls="panel-colors" tabindex="-1">Colors</button>
+            <button class="tab" type="button" role="tab" id="tab-look" aria-selected="true" aria-controls="panel-look"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sliders-horizontal"></use></svg>Look</button>
+            <button class="tab" type="button" role="tab" id="tab-colors" aria-selected="false" aria-controls="panel-colors" tabindex="-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Colors</button>
           </div>
 
           <div class="tab-panel" role="tabpanel" id="panel-look" aria-labelledby="tab-look">
@@ -132,103 +157,114 @@
 
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="glow">Glow</label>
+                  <label for="glow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg>Glow</label>
+                  <button class="info-btn" type="button" aria-label="About Glow" aria-expanded="false" aria-controls="glow-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="glow" id="glow-value">42</output>
                 </div>
                 <input type="range" class="" id="glow" min="0" max="100" step="1" value="42" aria-describedby="glow-help">
-                <p class="control__help" id="glow-help">How much bright areas glow into their surroundings.</p>
+                <p class="control__help control__help--pop" id="glow-help">How much bright areas glow into their surroundings.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="fog-amount">Fog amount</label>
+                  <label for="fog-amount"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cloud-fog"></use></svg>Fog amount</label>
+                  <button class="info-btn" type="button" aria-label="About Fog amount" aria-expanded="false" aria-controls="fog-amount-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="fog-amount" id="fog-amount-value">44</output>
                 </div>
                 <input type="range" class="" id="fog-amount" min="0" max="100" step="1" value="44" aria-describedby="fog-amount-help">
-                <p class="control__help" id="fog-amount-help">How thick the haze is. Light fog stays near the top of the image. Heavy fog covers all of it.</p>
+                <p class="control__help control__help--pop" id="fog-amount-help">How thick the haze is. Light fog stays near the top of the image. Heavy fog covers all of it.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="fog-color">Fog color</label>
+                  <label for="fog-color"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cloud"></use></svg>Fog color</label>
+                  <button class="info-btn" type="button" aria-label="About Fog color" aria-expanded="false" aria-controls="fog-color-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="fog-color" id="fog-color-value">0</output>
                 </div>
                 <input type="range" class="track-fog" id="fog-color" min="0" max="100" step="1" value="0" aria-describedby="fog-color-help">
-                <p class="control__help" id="fog-color-help">From the photo’s own sky color to grey.</p>
+                <p class="control__help control__help--pop" id="fog-color-help">From the photo’s own sky color to grey.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="brightness">Brightness</label>
+                  <label for="brightness"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>Brightness</label>
+                  <button class="info-btn" type="button" aria-label="About Brightness" aria-expanded="false" aria-controls="brightness-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="brightness" id="brightness-value">40</output>
                 </div>
                 <input type="range" class="" id="brightness" min="0" max="100" step="1" value="40" aria-describedby="brightness-help">
-                <p class="control__help" id="brightness-help">Darker or lighter overall.</p>
+                <p class="control__help control__help--pop" id="brightness-help">Darker or lighter overall.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="softness">Softness</label>
+                  <label for="softness"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-blend"></use></svg>Softness</label>
+                  <button class="info-btn" type="button" aria-label="About Softness" aria-expanded="false" aria-controls="softness-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="softness" id="softness-value">0</output>
                 </div>
                 <input type="range" class="" id="softness" min="0" max="100" step="1" value="0" aria-describedby="softness-help">
-                <p class="control__help" id="softness-help">Draws the image smaller, then smooths it out, like PS2 output on a TV.</p>
+                <p class="control__help control__help--pop" id="softness-help">Draws the image smaller, then smooths it out, like PS2 output on a TV.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="tint">Tint</label>
+                  <label for="tint"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-droplet"></use></svg>Tint</label>
+                  <button class="info-btn" type="button" aria-label="About Tint" aria-expanded="false" aria-controls="tint-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="tint" id="tint-value">50</output>
                 </div>
                 <input type="range" class="track-tint" id="tint" min="0" max="100" step="1" value="50" aria-describedby="tint-help">
-                <p class="control__help" id="tint-help">Shifts the colors toward blue-white (left) or olive green (right). The middle is no tint.</p>
+                <p class="control__help control__help--pop" id="tint-help">Shifts the colors toward blue-white (left) or olive green (right). The middle is no tint.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="grain">Grain</label>
+                  <label for="grain"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grip"></use></svg>Grain</label>
+                  <button class="info-btn" type="button" aria-label="About Grain" aria-expanded="false" aria-controls="grain-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="grain" id="grain-value">22</output>
                 </div>
                 <input type="range" class="" id="grain" min="0" max="100" step="1" value="22" aria-describedby="grain-help">
-                <p class="control__help" id="grain-help">How much moving film grain the TV screen adds.</p>
+                <p class="control__help control__help--pop" id="grain-help">How much moving film grain the TV screen adds.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="tv">TV effect</label>
+                  <label for="tv"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"></use></svg>TV effect</label>
+                  <button class="info-btn" type="button" aria-label="About TV effect" aria-expanded="false" aria-controls="tv-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="tv" id="tv-value">35</output>
                 </div>
                 <input type="range" class="" id="tv" min="0" max="100" step="1" value="35" aria-describedby="tv-help">
-                <p class="control__help" id="tv-help">How strong the CRT TV look is: scanlines, a curved screen and darker edges. 0 turns it off.</p>
+                <p class="control__help control__help--pop" id="tv-help">How strong the CRT TV look is: scanlines, a curved screen and darker edges. 0 turns it off.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="output-resolution">Output resolution</label>
+                  <label for="output-resolution"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-3x3"></use></svg>Output resolution</label>
+                  <button class="info-btn" type="button" aria-label="About Output resolution" aria-expanded="false" aria-controls="output-resolution-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="output-resolution" id="output-resolution-value">Medium</output>
                 </div>
                 <input type="range" id="output-resolution" min="1" max="3" step="1" value="2" aria-valuetext="Medium" aria-describedby="output-resolution-help">
-                <p class="control__help" id="output-resolution-help">Lower resolution uses fewer pixels and shows less detail.</p>
+                <p class="control__help control__help--pop" id="output-resolution-help">Lower resolution uses fewer pixels and shows less detail.</p>
               </div>
           </div>
 
           <div class="tab-panel" role="tabpanel" id="panel-colors" aria-labelledby="tab-colors" hidden>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="palette-size">Palette size</label>
+                  <label for="palette-size"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Palette size</label>
+                  <button class="info-btn" type="button" aria-label="About Palette size" aria-expanded="false" aria-controls="palette-size-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="palette-size" id="palette-size-value">64 colors</output>
                 </div>
                 <input type="range" id="palette-size" min="0" max="6" step="1" value="4" aria-valuetext="64 colors" aria-describedby="palette-size-help">
-                <p class="control__help" id="palette-size-help">Reduce the number of colors used in the image.</p>
+                <p class="control__help control__help--pop" id="palette-size-help">Reduce the number of colors used in the image.</p>
               </div>
               <div class="control menu-row">
                 <div class="control__head">
-                  <label for="color-strength">Color strength</label>
+                  <label for="color-strength"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-droplets"></use></svg>Color strength</label>
+                  <button class="info-btn" type="button" aria-label="About Color strength" aria-expanded="false" aria-controls="color-strength-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button>
                   <output class="value-pill" for="color-strength" id="color-strength-value">86</output>
                 </div>
                 <input type="range" class="" id="color-strength" min="0" max="100" step="1" value="86" aria-describedby="color-strength-help">
-                <p class="control__help" id="color-strength-help">How vivid the colors are before the palette is reduced.</p>
+                <p class="control__help control__help--pop" id="color-strength-help">How vivid the colors are before the palette is reduced.</p>
               </div>
               <fieldset class="control segmented menu-row" aria-describedby="dithering-help">
-                <legend>Dithering</legend>
+                <legend><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-2x2"></use></svg>Dithering<button class="info-btn" type="button" aria-label="About Dithering" aria-expanded="false" aria-controls="dithering-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button></legend>
                 <div class="segmented__options">
                   <label><input type="radio" name="dithering" value="off"><span>Off</span></label>
                   <label><input type="radio" name="dithering" value="diffusion"><span>Error diffusion</span></label>
                   <label><input type="radio" name="dithering" value="ordered" checked><span>Ordered (PS2)</span></label>
                 </div>
-                <p class="control__help" id="dithering-help">Error diffusion spreads rounding errors to nearby pixels. Ordered dithering uses a repeating grid pattern, like many PS2 games.</p>
+                <p class="control__help control__help--pop" id="dithering-help">Error diffusion spreads rounding errors to nearby pixels. Ordered dithering uses a repeating grid pattern, like many PS2 games.</p>
               </fieldset>
           </div>
 
@@ -237,18 +273,18 @@
         <div class="action-bar">
           <div class="action-bar__status">
             <p class="status" id="status" role="status" aria-live="polite">Choose a photo or try a sample to start.</p>
-            <p class="hint">Changes apply as soon as you let go of a slider.</p>
+            <p class="hint">Changes apply when you let go of a slider.</p>
           </div>
           <div class="action-bar__buttons">
-            <button class="button button--secondary" type="button" id="reset" disabled>Reset settings</button>
-            <button class="button" type="button" id="download" disabled>Download PNG</button>
+            <button class="button button--secondary" type="button" id="reset" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"></use></svg>Reset settings</button>
+            <button class="button" type="button" id="download" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>Download PNG</button>
           </div>
         </div>
       </div>
 
       <section class="panel palette" aria-labelledby="palette-title" data-reveal>
         <h2 id="palette-title">Colors in your image</h2>
-        <p>After processing, select a color to see its red, green and blue values.</p>
+        <p>Select a color to see its red, green and blue values.</p>
         <p class="palette__count" id="palette-count"></p>
         <div class="palette__swatches" id="palette-swatches">
           <p class="palette__empty">Your palette will appear here after processing.</p>
@@ -263,16 +299,16 @@
 
         <div class="learn__ideas">
           <div>
-            <h3>RGB values</h3>
-            <p>Screens make every color by mixing red, green and blue light. Each channel has a value from 0 to 255, so one pixel can show about 16.7 million colors. For example, rgb(255, 140, 0) is a bright orange.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-monitor"></use></svg>RGB values</h3>
+            <p>Screens mix red, green and blue light, each from 0 to 255, so one pixel can show about 16.7 million colors. For example, rgb(255, 140, 0) is a bright orange.</p>
           </div>
           <div>
-            <h3>Palettes and quantization</h3>
-            <p>A palette is a fixed set of colors an image is allowed to use. Quantization picks a palette for your photo, then replaces each pixel with the closest color in it. So several similar blues in a sky can all become one blue.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Palettes and quantization</h3>
+            <p>A palette is the fixed set of colors an image may use. Quantization picks a palette and swaps each pixel for its closest color, so similar blues become one blue.</p>
           </div>
           <div>
-            <h3>Dithering</h3>
-            <p>With only a few colors, smooth areas like a sunset sky break into visible bands. Dithering places palette colors next to each other in a pattern. From a normal viewing distance, your eye blends them into shades the palette doesn’t have. Many PS2 games used ordered dithering, which repeats a small grid pattern instead of spreading the rounding errors around.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-2x2"></use></svg>Dithering</h3>
+            <p>With few colors, smooth areas break into bands. Dithering mixes palette colors in a pattern your eye blends into in-between shades. Many PS2 games used ordered dithering, a small repeating grid.</p>
           </div>
         </div>
 
@@ -424,48 +460,48 @@
         <div class="cards">
           <article class="card">
             <p class="label">Output resolution</p>
-            <h3>Fewer pixels</h3>
-            <p>Resolution sets how many pixels the image has. Lower resolution makes the image smaller and loses fine detail, but each pixel can still use any color in the palette. Softness is different. It shrinks the picture and enlarges it again, so fine detail is lost but the pixel count stays the same.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-3x3"></use></svg>Fewer pixels</h3>
+            <p>Resolution sets the pixel count. Fewer pixels lose fine detail, but each can still use any palette color. Softness also blurs detail, but keeps the pixel count.</p>
           </article>
           <article class="card">
             <p class="label">Palette size</p>
-            <h3>Fewer colors</h3>
-            <p>Palette size sets how many different colors the image can use. The number of pixels stays the same. The size is a maximum, so a simple image can end up using fewer colors.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Fewer colors</h3>
+            <p>Palette size sets how many colors the image can use. The pixel count stays the same, and a simple image may use fewer.</p>
           </article>
           <article class="card">
             <p class="label">Look settings</p>
-            <h3>New shades first</h3>
-            <p>Glow, fog, brightness, color strength, tint, grain and the TV effect change the photo before the palette is chosen. They add new shades, such as a soft haze in the sky, so the palette ends up with different colors. The pixel count stays the same.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg>New shades first</h3>
+            <p>Look settings like glow, fog, tint and the TV effect change the photo before the palette is chosen. They add new shades, so the palette ends up with different colors.</p>
           </article>
         </div>
       </div>
 
       <div class="panel" data-reveal>
         <h2>Why PS2 games looked like this</h2>
-        <p>The presets copy tricks PS2 games used to set a mood or to work around the console’s limits. Each one adds new shades before the palette is chosen, which is why the same palette size can look so different.</p>
+        <p>The presets copy tricks PS2 games used to set a mood or hide the console’s limits. Each adds new shades before the palette is chosen.</p>
         <div class="learn__ideas learn__ideas--pairs">
           <div>
-            <h3>Fog</h3>
-            <p>Fog in Silent Hill 2 makes the town feel closed in and uneasy. Many games of that time also used fog to hide how little of the world the console could draw at once.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cloud-fog"></use></svg>Fog</h3>
+            <p>Silent Hill 2 uses fog to make its town feel closed in. Many games also used fog to hide how little they could draw at once.</p>
           </div>
           <div>
-            <h3>Glow</h3>
-            <p>Shadow of the Colossus spreads bright light into its surroundings, an effect called bloom. Highlights look washed out, and the whole land seems to glow.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>Glow</h3>
+            <p>Shadow of the Colossus spreads bright light into its surroundings, called bloom, so the land seems to glow.</p>
           </div>
           <div>
-            <h3>Color filters</h3>
-            <p>Metal Gear Solid 3: Snake Eater lays a green, sepia-like filter over the whole picture, which gives its jungle a warm, faded look.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-droplet"></use></svg>Color filters</h3>
+            <p>Snake Eater lays a green, sepia-like filter over the whole picture for a warm, faded jungle.</p>
           </div>
           <div>
-            <h3>CRT TVs</h3>
-            <p>PS2 games were made for CRT TVs. The scanlines and soft picture of a CRT hid jagged edges, so games looked smoother on a TV than in a sharp screenshot.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"></use></svg>CRT TVs</h3>
+            <p>PS2 games were made for CRT TVs, whose scanlines and soft picture hid jagged edges.</p>
           </div>
         </div>
       </div>
 
       <div class="panel listen" data-reveal>
-        <h2>Listen: how color reduction works</h2>
-        <p>This short recording explains the same ideas. It only plays when you start it.</p>
+        <h2><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-headphones"></use></svg>Listen: how color reduction works</h2>
+        <p>A short recording of the same ideas. It plays only when you start it.</p>
         <audio class="listen__player" controls preload="none">
           <source src="assets/audio/quantization-guide.mp3" type="audio/mpeg">
           Your browser can’t play this audio. The transcript below has the same content.
@@ -485,7 +521,7 @@
     <section id="media-specs" class="media-specs container" aria-labelledby="media-specs-title" data-reveal>
       <p class="eyebrow">Technical media spec</p>
       <h2 id="media-specs-title">Media file details</h2>
-      <p>This table lists the media files used on this page, with their sizes before and after compression and how each one is encoded.</p>
+      <p>The media files on this page, their sizes before and after compression, and how each one is encoded.</p>
 
       <div class="table-wrap">
         <table class="spec-table">
@@ -528,7 +564,7 @@
     <div class="container">
       <p class="site-footer__lead">Creates a flat image with a PS2-inspired effect. No AI is used, and your photos stay in your browser.</p>
       <p>Sample photos from Pexels: sample photo 1 by <a href="https://www.pexels.com/photo/landscape-photography-of-an-open-field-under-the-orange-sky-11056055/">Guilherme Stecanella</a>, sample photo 2 by <a href="https://www.pexels.com/photo/mountains-rocks-hills-rock-26311729/">Radis B</a>.</p>
-      <p>Image processing by <a href="https://github.com/jhuckaby/canvas-plus">canvas-plus</a>. Screen effects by <a href="https://pixijs.com/">PixiJS</a> and <a href="https://github.com/pixijs/filters">pixi-filters</a>. Text set in <a href="https://rsms.me/inter/">Inter</a>.</p>
+      <p>Image processing by <a href="https://github.com/jhuckaby/canvas-plus">canvas-plus</a>. Screen effects by <a href="https://pixijs.com/">PixiJS</a> and <a href="https://github.com/pixijs/filters">pixi-filters</a>. Icons by <a href="https://lucide.dev/">Lucide</a>. Text set in <a href="https://rsms.me/inter/">Inter</a>.</p>
       <p>Preset names refer to Shadow of the Colossus, Silent Hill 2 and Metal Gear Solid 3: Snake Eater. This site is inspired by them and not affiliated with Sony Interactive Entertainment or Konami.</p>
     </div>
   </footer>
