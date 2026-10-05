@@ -57,26 +57,27 @@
       </div>
       <div class="panel" data-reveal>
         <h2>Why does it look different?</h2>
+        <p>Your processed photo uses far fewer colors than the original. Here’s how that works.</p>
 
         <div class="learn__ideas">
           <div>
-            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-monitor"></use></svg>RGB values</h3>
-            <p>Screens mix red, green and blue light, each from 0 to 255, so one pixel can show about 16.7 million colors. For example, rgb(255, 140, 0) is a bright orange.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-monitor"></use></svg>RGB color</h3>
+            <p>Every pixel on your screen mixes red, green and blue light. Each of the three has a brightness from 0 to 255, which gives about 16.7 million possible colors. For example, red 255, green 140 and blue 0 makes a bright orange.</p>
           </div>
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Palettes and quantization</h3>
-            <p>A palette is the fixed set of colors an image may use. Quantization picks a palette and swaps each pixel for its closest color, so similar blues become one blue.</p>
+            <p>A palette is the short list of colors an image is allowed to use. Quantization builds that list from your photo, then changes each pixel to the closest color on it. So four slightly different blues in a sky can all become the same blue.</p>
           </div>
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-2x2"></use></svg>Dithering</h3>
-            <p>With few colors, smooth areas break into bands. Dithering mixes palette colors in a pattern your eye blends into in-between shades. Many PS2 games used ordered dithering, a small repeating grid.</p>
+            <p>When there aren’t enough colors, a smooth sky turns into stripes. This is called banding. Dithering hides it by mixing palette colors in a fine pattern of dots, which your eye blends into the shades in between. Many PS2 games used a small, repeating checkered pattern for this.</p>
           </div>
         </div>
 
         <figure class="diagram">
           <svg class="diagram__svg diagram__svg--wide" viewBox="0 0 960 270" role="img" aria-labelledby="diagram-wide-title diagram-wide-desc">
             <title id="diagram-wide-title">How quantization maps colors to a palette</title>
-            <desc id="diagram-wide-desc">Eight original colors, four blues and four oranges, each point to the closest of three palette colors: one blue, one light orange and one dark orange. The result is shown twice. Without dithering, the image has hard bands. With dithering, checkered patterns of two palette colors soften the bands.</desc>
+            <desc id="diagram-wide-desc">Eight colors, four blues and four oranges, each point to the closest of three palette colors: one blue, one light orange and one dark orange. The resulting image is shown twice. Without dithering, it has hard stripes. With dithering, checkered patterns of two palette colors soften the stripes.</desc>
             <defs>
               <pattern id="wide-dither-a" width="32" height="32" patternUnits="userSpaceOnUse">
                 <rect width="32" height="32" fill="#82aed9"/>
@@ -210,52 +211,52 @@
             <text class="diagram__note" x="256" y="442" text-anchor="middle">With dithering</text>
           </svg>
 
-          <figcaption>Each original color is replaced by its closest palette color. Dithering mixes palette colors in a pattern to soften the bands.</figcaption>
+          <figcaption>Each color on the left changes to the closest palette color in the middle. On the right, the same image is shown twice: without dithering, it has hard stripes, and with dithering, a checkered pattern softens them.</figcaption>
         </figure>
       </div>
 
       <div class="panel" data-reveal>
         <h2>What does each setting change?</h2>
-        <p>Some settings reduce part of the image. Others change it before the palette is chosen.</p>
+        <p>Output resolution and Palette size each reduce one part of the image. The look settings work differently, because they change the photo before its colors are reduced.</p>
 
         <div class="cards">
           <article class="card">
             <p class="label">Output resolution</p>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-3x3"></use></svg>Fewer pixels</h3>
-            <p>Resolution sets the pixel count. Fewer pixels lose fine detail, but each can still use any palette color. Softness also blurs detail, but keeps the pixel count.</p>
+            <p>Resolution sets how many pixels the image has. With fewer pixels, you lose fine detail, but each pixel can still use any color in the palette. Softness also blurs detail, but it doesn’t change the number of pixels.</p>
           </article>
           <article class="card">
             <p class="label">Palette size</p>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-palette"></use></svg>Fewer colors</h3>
-            <p>Palette size sets how many colors the image can use. The pixel count stays the same, and a simple image may use fewer.</p>
+            <p>Palette size sets the most colors the image can use. The number of pixels stays the same. A simple photo can end up using fewer colors than the limit.</p>
           </article>
           <article class="card">
             <p class="label">Look settings</p>
-            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg>New shades first</h3>
-            <p>Look settings like glow, fog, tint and the TV effect change the photo before the palette is chosen. They add new shades, so the palette ends up with different colors.</p>
+            <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg>Changes made first</h3>
+            <p>Glow, fog, tint, grain and the TV effect change the photo before its colors are reduced. They add new shades, such as haze in the sky, so the palette ends up with different colors.</p>
           </article>
         </div>
       </div>
 
       <div class="panel" data-reveal>
         <h2>Why PS2 games looked like this</h2>
-        <p>The presets copy tricks PS2 games used to set a mood or hide the console’s limits. Each adds new shades before the palette is chosen.</p>
+        <p>The presets copy effects that PS2 games used to set a mood or to hide what the console couldn’t do. Like the look settings, these effects change the colors before the palette is chosen.</p>
         <div class="learn__ideas learn__ideas--pairs">
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cloud-fog"></use></svg>Fog</h3>
-            <p>Silent Hill 2 uses fog to make its town feel closed in. Many games also used fog to hide how little they could draw at once.</p>
+            <p>In Silent Hill 2, thick fog makes the town feel closed in and uneasy. Many games of that time also used fog to hide how little of the world the console could draw at once.</p>
           </div>
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>Glow</h3>
-            <p>Shadow of the Colossus spreads bright light into its surroundings, called bloom, so the land seems to glow.</p>
+            <p>In Shadow of the Colossus, bright light spills into the areas around it. This effect is called bloom, and it makes the whole land seem to glow.</p>
           </div>
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-droplet"></use></svg>Color filters</h3>
-            <p>Snake Eater lays a green, sepia-like filter over the whole picture for a warm, faded jungle.</p>
+            <p>Metal Gear Solid 3: Snake Eater puts a green, sepia-like tint over the whole picture, which gives its jungle a warm, faded look.</p>
           </div>
           <div>
             <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tv"></use></svg>CRT TVs</h3>
-            <p>PS2 games were made for CRT TVs, whose scanlines and soft picture hid jagged edges.</p>
+            <p>PS2 games were made for CRT TVs. Their soft picture and thin dark lines, called scanlines, hid jagged edges, so games looked smoother on a TV than they do in a sharp screenshot.</p>
           </div>
         </div>
       </div>
@@ -285,11 +286,11 @@
       <section id="media-specs" class="panel media-specs" aria-labelledby="media-specs-title" data-reveal>
         <p class="eyebrow">Technical media spec</p>
         <h2 id="media-specs-title">Media file details</h2>
-        <p>The media files on this page, their sizes before and after compression, and how each one is encoded.</p>
+        <p>The three media files on this site. For each one, the table shows how much smaller it got, how much color or sound detail it keeps, and how it was compressed.</p>
 
         <div class="table-wrap">
           <table class="spec-table">
-            <caption class="visually-hidden">Media files used on this page</caption>
+            <caption class="visually-hidden">Media files used on this site</caption>
             <thead>
               <tr>
                 <th scope="col">Asset Name &amp; File Format</th>
@@ -300,27 +301,27 @@
             </thead>
             <tbody>
               <tr>
-                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 1 · WebP</th>
-                <td data-label="Original Size → Compressed">412 KB JPEG (2160 × 3840) → 20 KB WebP (563 × 1000)</td>
-                <td data-label="Color Depth / Quantization">24-bit color (8 bits per channel), stored as YUV 4:2:0</td>
-                <td data-label="Compression Algorithm">Lossy WebP (VP8) at quality 80. The image is split into blocks, predicted, transformed and quantized, then entropy-coded</td>
+                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 1 (WebP)</th>
+                <td data-label="Original Size → Compressed">412 KB JPEG → 20 KB WebP. The photo was also resized from 2160 × 3840 to 563 × 1000 pixels.</td>
+                <td data-label="Color Depth / Quantization">24-bit color, with 8 bits each for red, green and blue.</td>
+                <td data-label="Compression Algorithm">Lossy WebP at quality 80. It splits the image into small blocks and drops detail your eye is unlikely to notice. Some quality is lost to make the file smaller.</td>
               </tr>
               <tr>
-                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 2 · PNG</th>
-                <td data-label="Original Size → Compressed">3.6 MB JPEG (4928 × 3264) → 366 KB PNG (1000 × 662)</td>
-                <td data-label="Color Depth / Quantization">8-bit indexed: a 256-color palette with Floyd-Steinberg dithering</td>
-                <td data-label="Compression Algorithm">Lossless PNG (DEFLATE: LZ77 and Huffman coding). The colors were reduced to 256 before saving, so the color reduction itself is lossy</td>
+                <th scope="row" data-label="Asset Name &amp; File Format">Sample photo 2 (PNG)</th>
+                <td data-label="Original Size → Compressed">3.6 MB JPEG → 366 KB PNG. The photo was also resized from 4928 × 3264 to 1000 × 662 pixels.</td>
+                <td data-label="Color Depth / Quantization">8-bit indexed color. The colors were cut down to a palette of 256, with dithering to hide the banding.</td>
+                <td data-label="Compression Algorithm">Lossless PNG, using DEFLATE (LZ77 and Huffman coding). It stores repeated patterns as shorter codes and loses nothing. The only loss happened earlier, when the colors were cut down to 256.</td>
               </tr>
               <tr>
-                <th scope="row" data-label="Asset Name &amp; File Format">Audio guide · MP3</th>
-                <td data-label="Original Size → Compressed">To be measured</td>
-                <td data-label="Color Depth / Quantization">To be measured</td>
-                <td data-label="Compression Algorithm">To be measured</td>
+                <th scope="row" data-label="Asset Name &amp; File Format">Voice-over (MP3)</th>
+                <td data-label="Original Size → Compressed">16.0 MB WAV → 2.7 MB MP3. Both are 3 minutes 2 seconds long.</td>
+                <td data-label="Color Depth / Quantization">16-bit audio at 44.1 kHz, mono. The recording measures the sound 44,100 times per second and rounds each measurement to one of 65,536 levels.</td>
+                <td data-label="Compression Algorithm">Lossy MP3 with a variable bitrate that averages about 119 kbps. It removes sounds people can barely hear, then shrinks the rest with Huffman coding.</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p class="spec-note">Sizes use 1 KB = 1,000 bytes. Both photos were also resized for the web, which accounts for part of the saving.</p>
+        <p class="spec-note">1 KB is 1,000 bytes. Part of each photo’s saving comes from the smaller pixel size, not only from compression.</p>
       </section>
 
       <section class="panel references" aria-labelledby="references-title" data-reveal>
