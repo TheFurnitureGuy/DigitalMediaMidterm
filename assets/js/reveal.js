@@ -13,11 +13,17 @@
 
   document.documentElement.classList.add('reveal-on');
 
+  // Decide from the section's full size. The opening animation clips the section to a
+  // thin line, and the observer only counts that line, which used to make the section
+  // flip between shown and hidden when it sat near the bottom of the screen.
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
+      var box = entry.boundingClientRect;
+      var root = entry.rootBounds;
+      if (!root) return;
+      if (box.top < root.bottom && box.bottom > root.top) {
         entry.target.classList.add('is-revealed');
-      } else if (entry.boundingClientRect.top > 0) {
+      } else if (box.top >= root.bottom && !atEnd()) {
         // The section is below the screen again, so the visitor scrolled back up.
         entry.target.classList.remove('is-revealed');
       }
@@ -31,4 +37,28 @@
       section.classList.add('is-revealed');
     });
   });
+
+  // At the end of the page, a short section can sit in the bottom strip the observer
+  // ignores, so reveal anything on screen once the visitor can't scroll any further.
+  function atEnd() {
+    return window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+  }
+
+  var queued = false;
+  function revealAtEnd() {
+    queued = false;
+    if (!atEnd()) return;
+    sections.forEach(function (section) {
+      var box = section.getBoundingClientRect();
+      if (box.top < window.innerHeight && box.bottom > 0) section.classList.add('is-revealed');
+    });
+  }
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    window.requestAnimationFrame(revealAtEnd);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  onScroll();
 })();
