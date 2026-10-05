@@ -60,7 +60,9 @@
     ready: 'Your image is ready.',
     failed: 'We couldn’t process this image. Try a smaller JPG, PNG or WebP, or choose a sample.',
     trySample: 'You can also try a sample.',
-    noTools: 'The image tools didn’t load. Check your connection and try again.'
+    noTools: 'The image tools didn’t load. Check your connection and try again.',
+    makingGif: 'Making your GIF…',
+    gifFailed: 'We couldn’t make the GIF. Try again, or download the PNG.'
   };
 
   var el = {
@@ -78,6 +80,7 @@
     ditherInputs: document.querySelectorAll('input[name="dithering"]'),
     reset: document.getElementById('reset'),
     download: document.getElementById('download'),
+    downloadGif: document.getElementById('download-gif'),
     paletteCount: document.getElementById('palette-count'),
     swatches: document.getElementById('palette-swatches'),
     readout: document.getElementById('palette-readout'),
@@ -101,7 +104,7 @@
     name: '',           // short name used in alt text
     resized: {},        // resized copies, keyed by resolution
     applied: null,      // settings used for the current result
-    result: null,       // { url, colors } of the current result
+    result: null,       // { url, colors, palette, dither } of the current result
     originalUrl: null,  // object URL of an uploaded photo's preview
     palette: [],
     busy: false,
@@ -230,6 +233,7 @@
 
     el.reset.disabled = state.busy || !hasImage;
     el.download.disabled = state.busy || !resultMatches;
+    el.downloadGif.disabled = state.busy || !resultMatches;
     el.sunset.disabled = state.busy;
     el.desert.disabled = state.busy;
     el.upload.disabled = state.busy;
@@ -371,6 +375,8 @@
 
   function updateMotionControls() {
     el.motionControls.hidden = !state.motion.available;
+    // The GIF needs the moving preview, so it's only offered when that works.
+    el.downloadGif.hidden = !state.motion.available;
     // Swap the label and the icon together.
     el.motionToggle.querySelector('.motion-toggle__label').textContent = state.motion.playing ? 'Pause TV effect' : 'Play TV effect';
     el.motionToggle.querySelector('use').setAttribute('href', state.motion.playing ? '#i-pause' : '#i-play');
@@ -441,6 +447,8 @@
       state.result = {
         url: URL.createObjectURL(result.blob),
         colors: colors,
+        palette: result.palette,
+        dither: settings.dither,
         label: 'Processed ' + state.name + ', ' + lookName(settings.look) + ' look, ' + colors + ' colors, ' + DITHER_NAMES[settings.dither]
       };
       state.applied = settings;
@@ -524,6 +532,40 @@
     document.body.appendChild(link);
     link.click();
     link.remove();
+  }
+
+  // Makes a short GIF of the moving TV effect in the same colors as the PNG.
+  async function onDownloadGif() {
+    if (!state.result || !state.motion.available || el.downloadGif.disabled) return;
+    state.busy = true;
+    updateButtons();
+    setStatus(MESSAGES.makingGif);
+    await nextPaint();
+    try {
+      var blob = await GifExport.makeGif({
+        palette: state.result.palette,
+        colors: state.result.colors,
+        dither: state.result.dither
+      });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = 'ps2-photo-lab.gif';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+      setStatus(MESSAGES.ready);
+    } catch (err) {
+      setStatus(MESSAGES.gifFailed);
+    } finally {
+      state.busy = false;
+      updateButtons();
+    }
+    if (state.pending) {
+      state.pending = false;
+      requestApply();
+    }
   }
 
   /* Events */
@@ -630,6 +672,7 @@
     requestApply();
   });
   el.download.addEventListener('click', onDownload);
+  el.downloadGif.addEventListener('click', onDownloadGif);
   el.motionToggle.addEventListener('click', onMotionToggle);
 
   el.swatches.addEventListener('click', function (event) {

@@ -35,6 +35,7 @@ docs/             audio script (not deployed)
 | `assets/js/vendor/canvas-plus.js` | github.com/jhuckaby/canvas-plus (npm: pixl-canvas-plus) | commit e96e76eafd189f5413bfc856fa001702f843f86c | MIT |
 | `assets/js/vendor/pixi.min.js` | PixiJS, pixijs.com | 8.22.0 | MIT |
 | `assets/js/vendor/pixi-filters.js` | github.com/pixijs/filters | 6.1.5 | MIT |
+| `assets/js/vendor/gifenc.esm.js` | github.com/mattdesl/gifenc (npm: gifenc) | 1.0.3 | MIT |
 | Icons inline in `index.html` | Lucide (lucide.dev, npm: lucide-static); license in `assets/icons/LUCIDE-LICENSE.txt` | 1.52.0 | ISC |
 | `assets/fonts/inter-latin-wght-normal.woff2` | Inter by Rasmus Andersson, via @fontsource-variable/inter | 5.3.0 | SIL OFL 1.1 |
 

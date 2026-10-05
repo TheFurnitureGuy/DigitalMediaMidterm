@@ -316,8 +316,12 @@
     var height = canvas.get('height');
     var ctx = canvas.getContext();
     var image = ctx.getImageData(0, 0, width, height);
-    var data = image.data;
+    orderPixels(image.data, width, height, colors);
+    ctx.putImageData(image, 0, 0);
+  }
 
+  // The pattern itself, on raw RGBA pixels. The GIF download uses it too.
+  function orderPixels(data, width, height, colors) {
     // Rough gap between neighboring palette colors in each channel.
     var amount = (256 / Math.cbrt(colors)) * ORDERED.spread;
 
@@ -330,7 +334,6 @@
         data[i + 2] += nudge;
       }
     }
-    ctx.putImageData(image, 0, 0);
   }
 
   // Builds the pixi-filters chain: glow, red and blue split, then the CRT screen.
@@ -499,6 +502,7 @@
     LOOK_KEYS: LOOK_KEYS,
     DITHER_MODES: DITHER_MODES,
     ORDERED: ORDERED,
+    orderPixels: orderPixels,
     makeScreenFilters: makeScreenFilters,
     usesGpu: usesGpu,
     checkFile: checkFile,

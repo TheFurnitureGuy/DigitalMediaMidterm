@@ -123,11 +123,40 @@
     if (app) clearSprite();
   }
 
+  // Draws `count` frames of the moving TV effect off screen, each with new grain and
+  // scanline positions, and returns their RGBA pixels. Used by the GIF download.
+  function captureFrames(count) {
+    if (!app || !sprite || !crt) throw new Error('The moving preview is not ready.');
+    var width = app.renderer.width;
+    var height = app.renderer.height;
+    var area = new PIXI.Rectangle(0, 0, width, height);
+    var savedTime = crt.time;
+    var frames = [];
+    try {
+      for (var i = 0; i < count; i++) {
+        crt.time = savedTime + i * 1.5;
+        crt.seed = Math.random();
+        app.render();
+        var canvas = app.renderer.extract.canvas({ target: app.stage, frame: area });
+        var ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+        ctx.drawImage(canvas, 0, 0);
+        frames.push(ctx.getImageData(0, 0, width, height).data);
+      }
+    } finally {
+      crt.time = savedTime;
+      app.render();
+    }
+    return { width: width, height: height, frames: frames };
+  }
+
   window.ScreenPreview = {
     supported: supported,
     load: load,
     start: start,
     stop: stop,
-    clear: clear
+    clear: clear,
+    captureFrames: captureFrames
   };
 })();

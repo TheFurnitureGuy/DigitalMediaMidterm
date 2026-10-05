@@ -36,6 +36,7 @@
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /> <circle cx="9" cy="9" r="2" /> <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></symbol>
     <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 5v16" /> <path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" /> <path d="M7 3v18" /> <path d="M3 7.5h4" /> <path d="M3 12h18" /> <path d="M3 16.5h4" /> <path d="M17 3v18" /> <path d="M17 7.5h4" /> <path d="M17 16.5h4" /></symbol>
   </svg>
   <a class="skip-link" href="#lab">Skip to the photo lab</a>
 
@@ -103,7 +104,7 @@
           </div>
           <div class="preview__motion" id="motion-controls" hidden>
             <button class="button button--secondary" type="button" id="motion-toggle"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"></use></svg><span class="motion-toggle__label">Pause TV effect</span></button>
-            <p class="preview__note">The moving preview is in full color. Pause it to see the exact file you’ll download.</p>
+            <p class="preview__note">The moving preview is in full color. Pause it to see the exact PNG you’ll download. The GIF keeps the movement and uses the same colors as the PNG.</p>
           </div>
         </figure>
 
@@ -279,6 +280,7 @@
           <div class="action-bar__buttons">
             <button class="button button--secondary" type="button" id="reset" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"></use></svg>Reset settings</button>
             <button class="button" type="button" id="download" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>Download PNG</button>
+            <button class="button" type="button" id="download-gif" disabled hidden><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-film"></use></svg>Download GIF</button>
           </div>
         </div>
       </div>
@@ -299,6 +301,7 @@
 
   <script src="assets/js/processor.js" defer></script>
   <script src="assets/js/screen-preview.js" defer></script>
+  <script src="assets/js/gif-export.js" defer></script>
   <script src="assets/js/app.js" defer></script>
   <script src="assets/js/reveal.js" defer></script>
 </body>

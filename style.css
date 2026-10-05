@@ -1265,6 +1265,10 @@ input[type="range"].track-tint::-moz-range-track {
   gap: 8px;
 }
 
+.button[hidden] {
+  display: none;
+}
+
 .tab {
   display: inline-flex;
   align-items: center;
