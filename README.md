@@ -21,7 +21,7 @@ index.html        the page
 style.css         all styles
 assets/js/        page scripts
 assets/js/vendor/ third-party libraries
-assets/fonts/     Inter web font
+assets/fonts/     Exo 2 web font
 assets/images/    sample photos and thumbnails
 assets/audio/     recorded explanation
 assets/video/     required by the assignment, currently empty
@@ -37,7 +37,7 @@ docs/             audio script (not deployed)
 | `assets/js/vendor/pixi-filters.js` | github.com/pixijs/filters | 6.1.5 | MIT |
 | `assets/js/vendor/gifenc.esm.js` | github.com/mattdesl/gifenc (npm: gifenc) | 1.0.3 | MIT |
 | Icons inline in `index.html` | Lucide (lucide.dev, npm: lucide-static); license in `assets/icons/LUCIDE-LICENSE.txt` | 1.52.0 | ISC |
-| `assets/fonts/inter-latin-wght-normal.woff2` | Inter by Rasmus Andersson, via @fontsource-variable/inter | 5.3.0 | SIL OFL 1.1 |
+| `assets/fonts/exo2-latin-wght-normal.woff2` | Exo 2 by the Exo 2 Project Authors, via @fontsource-variable/exo-2 | 5.3.0 | SIL OFL 1.1 |
 
 Each license file sits next to its library or font.
 

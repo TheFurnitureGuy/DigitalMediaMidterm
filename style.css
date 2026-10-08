@@ -1,15 +1,15 @@
 /* PS2-Inspired Photo Lab */
 
 @font-face {
-  font-family: "Inter";
+  font-family: "Exo 2";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  src: url("assets/fonts/exo2-latin-wght-normal.woff2") format("woff2");
 }
 
 :root {
-  --bg: #070b16;
+  --bg: #04060c;
   --surface: #101a35;
   --surface-inset: #060a14;
   --border: rgba(122, 179, 255, 0.18);
@@ -23,7 +23,7 @@
   --disabled-bg: #18223d;
   --disabled-text: #8792ab;
   --glow: 0 0 24px rgba(59, 118, 246, 0.18);
-  --radius: 10px;
+  --radius: 3px;
   --gutter: 24px;
 }
 
@@ -43,15 +43,13 @@ html {
 body {
   margin: 0;
   background-color: var(--bg);
+  /* Near-black with two soft pools of blue light, like the PS2 menu screens. */
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.32), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 100% 30%, rgba(122, 179, 255, 0.08), transparent 70%),
-    linear-gradient(rgba(122, 179, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(122, 179, 255, 0.035) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.28), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 100% 40%, rgba(122, 179, 255, 0.07), transparent 70%);
   background-attachment: fixed;
   color: var(--text);
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Exo 2", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -60,24 +58,25 @@ h1,
 h2,
 h3 {
   margin: 0 0 0.5em;
-  font-weight: 700;
+  /* Light, slightly wide headings, like PS2 menu text. */
+  font-weight: 500;
   line-height: 1.2;
 }
 
 h1 {
   font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.01em;
 }
 
 h2 {
   font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
 }
 
 h3 {
   font-size: 1.125rem;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
 }
 
 p {
@@ -123,7 +122,7 @@ a:hover {
   left: 8px;
   z-index: 10;
   padding: 10px 16px;
-  border-radius: 6px;
+  border-radius: 2px;
   background: var(--accent);
   color: #fff;
   font-weight: 600;
@@ -164,7 +163,7 @@ a:hover {
 .backdrop span {
   position: absolute;
   border: 1px solid rgba(122, 179, 255, 0.18);
-  border-radius: 6px;
+  border-radius: 2px;
   background: linear-gradient(135deg, rgba(59, 118, 246, 0.12), rgba(59, 118, 246, 0.02));
   box-shadow: 0 0 18px rgba(59, 118, 246, 0.12);
   animation: float-a 18s ease-in-out infinite;
@@ -274,7 +273,7 @@ a:hover {
   min-height: 44px;
   padding-inline: 14px;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 2px;
   color: var(--accent-bright);
   font-size: 0.875rem;
   font-weight: 600;
@@ -309,7 +308,8 @@ a:hover {
 }
 
 /* A soft light slides across a link once on hover or focus. */
-.nav-list a::before {
+.nav-list a::before,
+.button:not(:disabled)::before {
   content: "";
   position: absolute;
   top: 0;
@@ -323,7 +323,9 @@ a:hover {
 
 @media (prefers-reduced-motion: no-preference) {
   .nav-list a:hover::before,
-  .nav-list a:focus-visible::before {
+  .nav-list a:focus-visible::before,
+  .button:not(:disabled):hover::before,
+  .button:not(:disabled):focus-visible::before {
     transform: translateX(220%);
     transition: transform 0.5s ease;
   }
@@ -362,34 +364,42 @@ a:hover {
 
 /* Intro */
 
+/* A slim screen title, like the top of a PS2 menu, not a big landing-page headline. */
 .intro {
-  padding-top: 40px;
-  padding-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 20px;
+  padding-top: 16px;
+  padding-bottom: 20px;
 }
 
 .intro h1 {
-  max-width: 12ch;
-  margin-bottom: 24px;
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
 }
 
 .intro__lead {
-  max-width: 60ch;
+  margin: 0;
   color: var(--muted);
-  font-size: 1.125rem;
 }
 
 /* Buttons */
 
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
   padding: 10px 18px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  background: rgba(12, 20, 42, 0.85);
+  color: var(--text);
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -398,19 +408,28 @@ a:hover {
   transition: background-color 0.15s, box-shadow 0.15s;
 }
 
-.button:hover {
+/* Dark like a PS2 menu item. Only the hovered or focused button lights up. */
+.button:hover,
+.button:focus-visible {
+  background: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 0 16px rgba(59, 118, 246, 0.35);
+}
+
+/* The one main action in each group keeps a solid fill. */
+.button--primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #fff;
+}
+
+.button--primary:hover,
+.button--primary:focus-visible {
   background: var(--accent-hover);
   box-shadow: 0 0 16px rgba(59, 118, 246, 0.45);
 }
 
 .button--secondary {
-  border-color: var(--border-strong);
   background: transparent;
-  color: var(--text);
-}
-
-.button--secondary:hover {
-  background: rgba(122, 179, 255, 0.1);
 }
 
 .button--toggle[aria-pressed="false"] {
@@ -475,7 +494,7 @@ a:hover {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 2px;
   background: var(--surface-inset);
 }
 
@@ -500,18 +519,16 @@ a:hover {
 }
 
 /* Status, Reset and Download, below the settings. */
+/* Status line and buttons along the bottom of the settings window, like a PS2 menu footer. */
 .action-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px 20px;
-  padding: 12px 16px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: rgba(10, 16, 34, 0.94);
-  box-shadow: 0 0 24px rgba(59, 118, 246, 0.3), 0 8px 24px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(6px);
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-strong);
 }
 
 .action-bar__status .hint {
@@ -612,7 +629,7 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 12px;
   padding: 12px;
   border: 1px dashed var(--border-strong);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .palette__empty {
@@ -690,7 +707,7 @@ input[type="range"]::-moz-range-thumb {
   margin: 0;
   padding: 20px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--surface-inset);
 }
 
@@ -756,11 +773,43 @@ input[type="range"]::-moz-range-thumb {
   gap: 16px;
 }
 
+/* Reading sections sit in the open, like text on a PS2 menu screen.
+   A thin light along the top separates them instead of a box. */
+.panel--open {
+  border-color: transparent;
+  background: none;
+  box-shadow: none;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  padding-inline: 0;
+}
+
+/* Ideas and setting notes read as menu rows: title on the left, text on the right. */
+.learn__ideas > div,
 .card {
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface-inset);
+  display: grid;
+  gap: 4px 32px;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+}
+
+.learn__ideas > div > *,
+.card > * {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .learn__ideas > div,
+  .card {
+    grid-template-columns: 240px 1fr;
+    align-items: start;
+  }
+
+  .learn__ideas > div > p,
+  .card > p:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
 }
 
 .card p:last-child {
@@ -772,6 +821,8 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
   max-width: 560px;
   margin-bottom: 24px;
+  /* Dark built-in player, so it matches the page instead of a bright white bar. */
+  color-scheme: dark;
 }
 
 .listen__transcript {
@@ -821,12 +872,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .spec-table tbody th {
-  border-radius: 6px 0 0 6px;
+  border-radius: 2px 0 0 2px;
   font-weight: 600;
 }
 
 .spec-table td:last-child {
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 2px 2px 0;
 }
 
 .spec-table td {
@@ -873,7 +924,7 @@ input[type="range"]::-moz-range-thumb {
 .sample-thumb {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 2px;
   object-fit: cover;
 }
 
@@ -912,7 +963,7 @@ input[type="range"]::-moz-range-thumb {
   height: 36px;
   padding: 0;
   border: 1px solid rgba(232, 237, 247, 0.25);
-  border-radius: 4px;
+  border-radius: 2px;
   cursor: pointer;
 }
 
@@ -955,14 +1006,14 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 20px;
   padding: 4px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--surface-inset);
 }
 
 .tab {
   min-height: 44px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 2px;
   background: transparent;
   color: var(--muted);
   font: inherit;
@@ -1033,7 +1084,7 @@ input[type="range"]::-moz-range-thumb {
   min-height: 44px;
   padding: 8px;
   border: 1px solid var(--border-strong);
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--surface-inset);
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
@@ -1055,7 +1106,7 @@ input[type="range"]::-moz-range-thumb {
 
 .preset__swatch {
   height: 26px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .preset__swatch--clean {
@@ -1108,7 +1159,7 @@ input[type="range"]::-moz-range-thumb {
 .menu-row {
   margin: 0 -10px 6px;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 2px;
   transition: background-color 0.2s, box-shadow 0.2s;
 }
 
@@ -1150,8 +1201,13 @@ input[type="range"].track-tint::-moz-range-track {
 .transcript {
   max-width: 70ch;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--surface-inset);
+}
+
+.transcript[open] {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 16px rgba(59, 118, 246, 0.25);
 }
 
 .transcript summary {
@@ -1160,7 +1216,7 @@ input[type="range"].track-tint::-moz-range-track {
   gap: 10px;
   min-height: 44px;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   list-style: none;
 }
@@ -1339,21 +1395,21 @@ input[type="range"].track-tint::-moz-range-track {
 
 .control__help--pop {
   position: absolute;
-  top: calc(100% - 6px);
+  /* Opens above its row, so it never covers the setting below. */
+  bottom: calc(100% - 6px);
   right: 10px;
   left: 10px;
   z-index: 20;
   margin: 0;
   padding: 10px 12px;
   border: 1px solid var(--border-strong);
-  border-radius: 8px;
+  border-radius: 2px;
   background: #0b1430;
   box-shadow: 0 0 18px rgba(59, 118, 246, 0.35), 0 8px 20px rgba(0, 0, 0, 0.5);
   color: var(--text);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-4px);
-  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  transform: translateY(4px);
   pointer-events: none;
 }
 
@@ -1364,6 +1420,8 @@ input[type="range"].track-tint::-moz-range-track {
   opacity: 1;
   visibility: visible;
   transform: none;
+  /* Fades in only. Closing is instant, so an old popup never lingers behind a new one. */
+  transition: opacity 0.15s, transform 0.15s;
 }
 
 .menu-row.help-hidden .control__help--pop {
@@ -1401,7 +1459,7 @@ input[type="range"].track-tint::-moz-range-track {
   grid-template-columns: repeat(3, 1fr);
   overflow: hidden;
   border: 1px solid var(--border-strong);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .segmented__options label {
@@ -1471,7 +1529,7 @@ input[type="range"].track-tint::-moz-range-track {
     margin-bottom: 12px;
     padding: 16px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 2px;
     background: var(--surface);
   }
 
@@ -1499,10 +1557,6 @@ input[type="range"].track-tint::-moz-range-track {
 
   .choose__actions .button {
     width: 100%;
-  }
-
-  .action-bar {
-    padding: 10px 12px;
   }
 
   .action-bar__status .hint {
@@ -1552,10 +1606,6 @@ input[type="range"].track-tint::-moz-range-track {
   .tabs {
     max-width: 380px;
   }
-
-  .cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 /* Wide screens: the diagram reads left to right */
@@ -1580,14 +1630,6 @@ input[type="range"].track-tint::-moz-range-track {
   .presets__tiles {
     grid-template-columns: repeat(4, 1fr);
     max-width: 860px;
-  }
-
-  .learn__ideas {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .learn__ideas--pairs {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 

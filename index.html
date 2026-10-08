@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PS2-Inspired Photo Lab</title>
   <meta name="description" content="Give a photo a PS2-inspired look and learn how RGB values, palettes, quantization and dithering change a digital image.">
-  <meta name="theme-color" content="#070b16">
+  <meta name="theme-color" content="#04060c">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%23070b16'/%3E%3Cg%20transform='translate(2%202)'%20stroke='%237ab3ff'%20stroke-width='1.8'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2010.5%2014%2015.5v10L5%2020.5z'%20fill='%237ab3ff'%20fill-opacity='0.35'%20stroke='none'/%3E%3Cpath%20d='M14%203%2023%208%2014%2013%205%208z%20M5%208v12.5l9%205%209-5V8%20M14%2013v12.5'%20fill='none'/%3E%3C/g%3E%3C/svg%3E">
-  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/exo2-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -61,9 +61,8 @@
 
   <main id="top">
     <section class="intro container" aria-labelledby="intro-title">
-      <p class="eyebrow">Learn how digital color works</p>
-      <h1 id="intro-title">Give your photo a retro look.</h1>
-      <p class="intro__lead">Restyle a photo, compare it with the original, and see how fewer colors change an image.</p>
+      <h1 id="intro-title">Photo Lab</h1>
+      <p class="intro__lead">Pick a photo, restyle it, and see how fewer colors change it.</p>
     </section>
 
     <section id="lab" class="lab container" aria-label="Photo lab">
@@ -71,7 +70,7 @@
         <h2>Choose your image</h2>
         <p>Upload a photo or start with a sample.</p>
         <div class="choose__actions">
-          <label class="button upload">
+          <label class="button button--primary upload">
             <input class="visually-hidden" type="file" id="upload-input" accept="image/jpeg,image/png,image/webp">
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-upload"></use></svg>
             Upload photo
@@ -270,22 +269,23 @@
               </fieldset>
           </div>
 
+
+          <div class="action-bar">
+            <div class="action-bar__status">
+              <p class="status" id="status" role="status" aria-live="polite">Choose a photo or try a sample to start.</p>
+              <p class="hint">Changes apply when you let go of a slider.</p>
+            </div>
+            <div class="action-bar__buttons">
+              <button class="button button--secondary" type="button" id="reset" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"></use></svg>Reset settings</button>
+              <button class="button button--primary" type="button" id="download" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>Download PNG</button>
+              <button class="button" type="button" id="download-gif" disabled hidden><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-film"></use></svg>Download GIF</button>
+            </div>
+          </div>
         </section>
 
-        <div class="action-bar">
-          <div class="action-bar__status">
-            <p class="status" id="status" role="status" aria-live="polite">Choose a photo or try a sample to start.</p>
-            <p class="hint">Changes apply when you let go of a slider.</p>
-          </div>
-          <div class="action-bar__buttons">
-            <button class="button button--secondary" type="button" id="reset" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"></use></svg>Reset settings</button>
-            <button class="button" type="button" id="download" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>Download PNG</button>
-            <button class="button" type="button" id="download-gif" disabled hidden><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-film"></use></svg>Download GIF</button>
-          </div>
-        </div>
       </div>
 
-      <section class="panel palette" aria-labelledby="palette-title" data-reveal>
+      <section class="panel panel--open palette" aria-labelledby="palette-title" data-reveal>
         <h2 id="palette-title">Colors in your image</h2>
         <p>Select a color to see its red, green and blue values.</p>
         <p class="palette__count" id="palette-count"></p>

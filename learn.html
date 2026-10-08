@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How Digital Color Works · PS2-Inspired Photo Lab</title>
   <meta name="description" content="How RGB values, 24-bit color, palettes, quantization and dithering work, and why PS2 games looked the way they did.">
-  <meta name="theme-color" content="#070b16">
+  <meta name="theme-color" content="#04060c">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%23070b16'/%3E%3Cg%20transform='translate(2%202)'%20stroke='%237ab3ff'%20stroke-width='1.8'%20stroke-linejoin='round'%3E%3Cpath%20d='M5%2010.5%2014%2015.5v10L5%2020.5z'%20fill='%237ab3ff'%20fill-opacity='0.35'%20stroke='none'/%3E%3Cpath%20d='M14%203%2023%208%2014%2013%205%208z%20M5%208v12.5l9%205%209-5V8%20M14%2013v12.5'%20fill='none'/%3E%3C/g%3E%3C/svg%3E">
-  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/exo2-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -55,7 +55,7 @@
         <h1 id="learn-title">How digital color works</h1>
         <p>How the photo editor reduces colors, and why PS2 games looked the way they did.</p>
       </div>
-      <div class="panel" data-reveal>
+      <div class="panel panel--open" data-reveal>
         <h2>Why does it look different?</h2>
         <p>Your processed photo uses far fewer colors than the original. Here’s how that works.</p>
 
@@ -215,7 +215,7 @@
         </figure>
       </div>
 
-      <div class="panel" data-reveal>
+      <div class="panel panel--open" data-reveal>
         <h2>What does each setting change?</h2>
         <p>Output resolution and Palette size each reduce one part of the image. The look settings work differently, because they change the photo before its colors are reduced.</p>
 
@@ -238,7 +238,7 @@
         </div>
       </div>
 
-      <div class="panel" data-reveal>
+      <div class="panel panel--open" data-reveal>
         <h2>Why PS2 games looked like this</h2>
         <p>The presets copy effects that PS2 games used to set a mood or to hide what the console couldn’t do. Like the look settings, these effects change the colors before the palette is chosen.</p>
         <div class="learn__ideas learn__ideas--pairs">
@@ -261,7 +261,7 @@
         </div>
       </div>
 
-      <div class="panel listen" data-reveal>
+      <div class="panel panel--open listen" data-reveal>
         <h2><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-headphones"></use></svg>Listen: how color reduction works</h2>
         <p>A short recording of the same ideas. It plays only when you start it.</p>
         <audio class="listen__player" controls preload="none">
@@ -324,14 +324,14 @@
         <p class="spec-note">1 KB is 1,000 bytes. Part of each photo’s saving comes from the smaller pixel size, not only from compression.</p>
       </section>
 
-      <section class="panel references" aria-labelledby="references-title" data-reveal>
+      <section class="panel panel--open references" aria-labelledby="references-title" data-reveal>
         <h2 id="references-title">References</h2>
         <ul class="references__list">
-          <li>Andersson, R. (2024). <i>Inter</i> (Version 4.1) [Typeface]. <a href="https://rsms.me/inter/">https://rsms.me/inter/</a></li>
           <li>Bonifacic, I. (2026, August 16). <i>Here’s why retro games look better on old CRT TVs</i>. Engadget. <a href="https://www.engadget.com/2236809/why-retro-games-look-better-old-crt-tv/">https://www.engadget.com/2236809/why-retro-games-look-better-old-crt-tv/</a></li>
           <li>Copetti, R. (2020, April 8). <i>PlayStation 2 architecture: A practical analysis</i>. The Copetti site. <a href="https://www.copetti.org/writings/consoles/playstation-2/">https://www.copetti.org/writings/consoles/playstation-2/</a></li>
           <li>DesLauriers, M. (2021). <i>gifenc</i> (Version 1.0.3) [Computer software]. GitHub. <a href="https://github.com/mattdesl/gifenc">https://github.com/mattdesl/gifenc</a></li>
-        <li>Huckaby, J. (2026). <i>canvas-plus</i> (Version 4.0.0) [Computer software]. GitHub. <a href="https://github.com/jhuckaby/canvas-plus">https://github.com/jhuckaby/canvas-plus</a></li>
+          <li>Exo 2 Project Authors. (2013). <i>Exo 2</i> [Typeface]. Google Fonts. <a href="https://github.com/googlefonts/Exo-2.0">https://github.com/googlefonts/Exo-2.0</a></li>
+          <li>Huckaby, J. (2026). <i>canvas-plus</i> (Version 4.0.0) [Computer software]. GitHub. <a href="https://github.com/jhuckaby/canvas-plus">https://github.com/jhuckaby/canvas-plus</a></li>
           <li>Konami Computer Entertainment Japan. (2004). <i>Metal Gear Solid 3: Snake Eater</i> [Video game]. Konami.</li>
           <li>Konami Computer Entertainment Tokyo. (2001). <i>Silent Hill 2</i> [Video game]. Konami.</li>
           <li>Libretro. (2025, January 5). <i>PlayStation2 and the CRT TV</i>. <a href="https://www.libretro.com/index.php/playstation2-and-the-crt-tv/">https://www.libretro.com/index.php/playstation2-and-the-crt-tv/</a></li>
