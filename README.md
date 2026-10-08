@@ -1,4 +1,4 @@
-# PS2-Inspired Photo Lab
+# PS2 Inspired Photo Lab
 
 A one-page website for the Digital Media midterm. Topic: Option B, Digital Color Systems & Quantization.
 

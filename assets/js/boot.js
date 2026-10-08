@@ -28,7 +28,7 @@
   });
   html += '<div class="boot__logo">' +
     '<svg viewBox="0 0 28 28"><path class="brand__logo-front" d="M5 10.5 14 15.5v10L5 20.5z" /><path d="M14 3 23 8 14 13 5 8z M5 8v12.5l9 5 9-5V8 M14 13v12.5" /></svg>' +
-    '<span>PS2-Inspired Photo Lab</span></div>';
+    '<span>PS2 Inspired Photo Lab</span></div>';
   boot.innerHTML = html;
   document.body.appendChild(boot);
 
