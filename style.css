@@ -348,13 +348,27 @@ a:hover {
 
 /* Panels */
 
+/* Framed windows look like PS2 menu glass: translucent blue, a lit top edge
+   and a faint inner highlight. */
 .panel {
+  position: relative;
   margin: 0;
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--glow);
+  background: linear-gradient(180deg, rgba(30, 52, 110, 0.55), rgba(10, 16, 34, 0.7));
+  box-shadow: var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.panel:not(.panel--open)::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-bright), transparent);
+  pointer-events: none;
 }
 
 .panel > p,
@@ -586,37 +600,48 @@ input[type="range"] {
   appearance: none;
 }
 
+/* Bar meters like the PS2 System Configuration screen: a dark bar that fills
+   with blue light up to a small square thumb. app.js keeps --fill up to date. */
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(122, 179, 255, 0.3);
+  height: 8px;
+  border: 1px solid rgba(122, 179, 255, 0.25);
+  border-radius: 1px;
+  background:
+    linear-gradient(90deg, rgba(59, 118, 246, 0.9), rgba(122, 179, 255, 0.9)) 0 0 / var(--fill, 50%) 100% no-repeat,
+    rgba(6, 10, 20, 0.9);
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  width: 22px;
+  width: 14px;
   height: 22px;
-  margin-top: -9px;
-  border: 2px solid var(--bg);
-  border-radius: 50%;
+  margin-top: -8px;
+  border: 1px solid #dbeaff;
+  border-radius: 1px;
   background: var(--accent-bright);
-  box-shadow: 0 0 10px rgba(122, 179, 255, 0.6);
+  box-shadow: 0 0 10px rgba(122, 179, 255, 0.7);
   -webkit-appearance: none;
   appearance: none;
 }
 
 input[type="range"]::-moz-range-track {
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(122, 179, 255, 0.3);
+  height: 8px;
+  border: 1px solid rgba(122, 179, 255, 0.25);
+  border-radius: 1px;
+  background: rgba(6, 10, 20, 0.9);
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 8px;
+  background: linear-gradient(90deg, rgba(59, 118, 246, 0.9), rgba(122, 179, 255, 0.9));
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--bg);
-  border-radius: 50%;
+  width: 12px;
+  height: 20px;
+  border: 1px solid #dbeaff;
+  border-radius: 1px;
   background: var(--accent-bright);
-  box-shadow: 0 0 10px rgba(122, 179, 255, 0.6);
+  box-shadow: 0 0 10px rgba(122, 179, 255, 0.7);
 }
 
 /* Palette */
@@ -777,7 +802,8 @@ input[type="range"]::-moz-range-thumb {
    A thin light along the top separates them instead of a box. */
 .panel--open {
   border-color: transparent;
-  background: none;
+  /* A faint dark backing so the floating blocks dim behind the text. */
+  background: rgba(4, 6, 12, 0.55);
   box-shadow: none;
   border-top: 1px solid var(--border);
   border-radius: 0;
@@ -1149,7 +1175,7 @@ input[type="range"]::-moz-range-thumb {
   margin-right: 6px;
   padding: 1px 10px;
   border: 1px solid var(--accent-bright);
-  border-radius: 999px;
+  border-radius: 2px;
   color: var(--accent-bright);
   font-weight: 700;
   box-shadow: 0 0 10px rgba(122, 179, 255, 0.35);
@@ -1176,7 +1202,7 @@ input[type="range"]::-moz-range-thumb {
   min-width: 3.25em;
   padding: 1px 10px;
   border: 1px solid var(--border-strong);
-  border-radius: 999px;
+  border-radius: 2px;
   background: rgba(122, 179, 255, 0.12);
   text-align: center;
 }
@@ -1195,6 +1221,21 @@ input[type="range"].track-tint::-webkit-slider-runnable-track {
 
 input[type="range"].track-tint::-moz-range-track {
   background: linear-gradient(90deg, #96beff, #8a93a6 50%, #96aa50);
+}
+
+/* The color-gradient tracks show their colors, not a fill. */
+input[type="range"].track-fog::-moz-range-progress,
+input[type="range"].track-tint::-moz-range-progress {
+  background: transparent;
+}
+
+/* A quick press-in, like pressing a button on a controller. */
+.button:not(:disabled):active,
+.tab:active,
+.preset__body:active {
+  transform: scale(0.98);
+  filter: brightness(1.25);
+  transition: transform 0.08s, filter 0.08s;
 }
 
 /* The transcript opens like a PS2 menu item. */
@@ -1647,6 +1688,11 @@ input[type="range"].track-tint::-moz-range-track {
     box-shadow: 0 12px 16px -12px rgba(0, 0, 0, 0.8);
   }
 
+  /* Keyboard focus scrolls settings into view below the pinned previews, not under them. */
+  .controls :is(input, button, label, summary) {
+    scroll-margin-top: calc(32vh + 180px);
+  }
+
   /* Cap the frames so at least half the screen is left for the sliders. */
   .workspace__stage .preview__frame {
     width: min(100%, calc(32vh * 10 / 7));
@@ -1672,6 +1718,10 @@ input[type="range"].track-tint::-moz-range-track {
     margin-inline: auto;
   }
 
+  .controls :is(input, button, label, summary) {
+    scroll-margin-top: calc(28vh + 150px);
+  }
+
   .preview--processed .preview__note {
     display: none;
   }
@@ -1688,7 +1738,11 @@ input[type="range"].track-tint::-moz-range-track {
     animation: busy-pulse 1.2s ease-in-out infinite alternate;
   }
 
-  .preset input:checked + .preset__body {
+  /* The selected item breathes, like the cursor in a PS2 menu. */
+  .preset input:checked + .preset__body,
+  .tab[aria-selected="true"],
+  .button:focus-visible,
+  .nav-list a[aria-current="page"] {
     animation: cursor-pulse 1.6s ease-in-out infinite alternate;
   }
 }
@@ -1712,4 +1766,85 @@ input[type="range"].track-tint::-moz-range-track {
   .button {
     transition: none;
   }
+}
+
+/* Boot intro (assets/js/boot.js): blocks gather, a glow swells, the logo appears. */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--bg);
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.boot.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot__glow {
+  position: absolute;
+  width: 60vmin;
+  height: 60vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 118, 246, 0.55), rgba(37, 99, 235, 0.12) 45%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.4);
+  animation: boot-glow 1.6s 0.5s ease-out forwards;
+}
+
+.boot__block {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(122, 179, 255, 0.5);
+  background: linear-gradient(135deg, rgba(59, 118, 246, 0.35), rgba(59, 118, 246, 0.05));
+  box-shadow: 0 0 18px rgba(59, 118, 246, 0.35);
+  opacity: 0;
+  transform: translate(var(--x), var(--y)) rotate(25deg);
+  animation: boot-gather 1.3s calc(var(--i) * 0.05s) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.boot__logo {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  opacity: 0;
+  animation: boot-logo 0.6s 1.2s ease-out forwards;
+}
+
+.boot__logo svg {
+  width: 64px;
+  height: 64px;
+  fill: none;
+  stroke: var(--accent-bright);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgba(122, 179, 255, 0.9));
+}
+
+@keyframes boot-gather {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  80%  { opacity: 0.9; transform: translate(0, 0) rotate(0deg) scale(0.6); }
+  100% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.3); }
+}
+
+@keyframes boot-glow {
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes boot-logo {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
 }

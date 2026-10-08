@@ -206,6 +206,10 @@
     el.paletteValue.textContent = colors;
     el.palette.setAttribute('aria-valuetext', colors);
     P.LOOK_KEYS.forEach(function (key) { el.lookValues[key].textContent = s.look[key]; });
+    // Fill each bar meter up to its thumb.
+    document.querySelectorAll('input[type="range"]').forEach(function (r) {
+      r.style.setProperty('--fill', ((r.value - r.min) / (r.max - r.min)) * 100 + '%');
+    });
 
     // Light up the matching preset tile, or show Custom when the sliders match none.
     var preset = matchingPreset(s.look);
