@@ -1465,6 +1465,11 @@ input[type="range"].track-tint::-moz-range-progress {
   transition: opacity 0.15s, transform 0.15s;
 }
 
+/* The popup ignores the pointer, except for a link inside it. */
+.control__help--pop a {
+  pointer-events: auto;
+}
+
 .menu-row.help-hidden .control__help--pop {
   opacity: 0;
   visibility: hidden;

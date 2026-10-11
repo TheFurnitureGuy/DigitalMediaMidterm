@@ -6,6 +6,10 @@ source-media/
 # Project instructions for Claude stay local
 CLAUDE.md
 
+# Writing standards and presentation notes stay local
+standards/
+docs/presentation-notes.md
+
 # Submission archive
 *.zip
 

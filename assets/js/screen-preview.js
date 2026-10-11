@@ -1,7 +1,7 @@
 /*
  * The animated TV preview for the processed image.
- * It shows the full-color image with the same pixi-filters the PNG uses,
- * with moving CRT noise. app.js decides when to show, start and stop it.
+ * It shows the image with the same pixi-filters the PNG uses, with moving CRT noise,
+ * then the PNG's palette and dithering. app.js decides when to show, start and stop it.
  */
 (function () {
   'use strict';
@@ -13,6 +13,7 @@
   var failed = false;
   var sprite = null;
   var crt = null;
+  var paletteFilter = null;
   var frame = null;
   var observer = null;
   var playing = false;
@@ -78,11 +79,12 @@
     sprite.destroy({ texture: true, textureSource: true });
     sprite = null;
     crt = null;
+    paletteFilter = null;
   }
 
-  // Prepares the preview for a new image, using the same glow and grain as the PNG.
-  // Rejects if WebGL isn't available.
-  async function load(source, label, screen) {
+  // Prepares the preview for a new image, using the same glow, grain, palette and dithering as the PNG.
+  // look: { palette, colors, dither } from the processed result. Rejects if WebGL isn't available.
+  async function load(source, label, screen, look) {
     await ensureApp();
     clearSprite();
     var width = source.width;
@@ -95,10 +97,12 @@
     copy.getContext('2d').drawImage(source, 0, 0);
 
     var filters = PhotoProcessor.makeScreenFilters(screen);
+    crt = filters[2];
+    paletteFilter = PhotoProcessor.makePaletteFilter(look.palette, look.colors, look.dither);
+    filters.push(paletteFilter);
     sprite = new PIXI.Sprite(PIXI.Texture.from(copy, true));
     sprite.filters = filters;
     sprite.filterArea = new PIXI.Rectangle(0, 0, width, height);
-    crt = filters[2];
     app.stage.addChild(sprite);
     app.canvas.setAttribute('aria-label', label);
     app.render();
@@ -132,6 +136,8 @@
     var area = new PIXI.Rectangle(0, 0, width, height);
     var savedTime = crt.time;
     var frames = [];
+    // The GIF applies the palette and dithering itself, so they must not be applied twice.
+    paletteFilter.enabled = false;
     try {
       for (var i = 0; i < count; i++) {
         crt.time = savedTime + i * 1.5;
@@ -146,6 +152,7 @@
       }
     } finally {
       crt.time = savedTime;
+      paletteFilter.enabled = true;
       app.render();
     }
     return { width: width, height: height, frames: frames };

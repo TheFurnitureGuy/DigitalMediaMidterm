@@ -104,7 +104,7 @@
           </div>
           <div class="preview__motion" id="motion-controls" hidden>
             <button class="button button--secondary" type="button" id="motion-toggle"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-pause"></use></svg><span class="motion-toggle__label">Pause TV effect</span></button>
-            <p class="preview__note">The moving preview is in full color. Pause it to see the exact PNG you’ll download. The GIF keeps the movement and uses the same colors as the PNG.</p>
+            <p class="preview__note">The moving preview uses your palette size and dithering. Scattered dots is only close while it moves. Pause it to see the exact PNG you’ll download. The GIF keeps the movement and uses the same colors as the PNG.</p>
           </div>
         </figure>
 
@@ -263,10 +263,10 @@
                 <legend><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid-2x2"></use></svg>Dithering<button class="info-btn" type="button" aria-label="About Dithering" aria-expanded="false" aria-controls="dithering-help"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"></use></svg></button></legend>
                 <div class="segmented__options">
                   <label><input type="radio" name="dithering" value="off"><span>Off</span></label>
-                  <label><input type="radio" name="dithering" value="diffusion"><span>Error diffusion</span></label>
-                  <label><input type="radio" name="dithering" value="ordered" checked><span>Ordered (PS2)</span></label>
+                  <label><input type="radio" name="dithering" value="diffusion"><span>Scattered dots</span></label>
+                  <label><input type="radio" name="dithering" value="ordered" checked><span>Checkered (PS2)</span></label>
                 </div>
-                <p class="control__help control__help--pop" id="dithering-help">Error diffusion spreads rounding errors to nearby pixels. Ordered dithering uses a repeating grid pattern, like many PS2 games.</p>
+                <p class="control__help control__help--pop" id="dithering-help">Dithering mixes your palette colors in a fine pattern of dots so a small palette looks smoother. Checkered repeats one grid, like many PS2 games. Scattered dots look more random. <a href="learn.html#learn-dithering" target="_blank" rel="noopener">Learn how dithering works (opens in a new tab)</a></p>
               </fieldset>
           </div>
 

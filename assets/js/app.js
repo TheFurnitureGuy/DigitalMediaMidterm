@@ -50,8 +50,8 @@
 
   var DITHER_NAMES = {
     off: 'no dithering',
-    diffusion: 'error diffusion dithering',
-    ordered: 'ordered dithering'
+    diffusion: 'scattered dots dithering',
+    ordered: 'checkered dithering'
   };
 
   var MESSAGES = {
@@ -402,7 +402,7 @@
     state.motion.available = false;
     if (window.ScreenPreview && ScreenPreview.supported()) {
       try {
-        await ScreenPreview.load(prepared, state.result.label + ', with a moving TV effect in full color', screen);
+        await ScreenPreview.load(prepared, state.result.label + ', with a moving TV effect', screen, state.result);
         state.motion.available = true;
       } catch (err) {
         state.motion.available = false;

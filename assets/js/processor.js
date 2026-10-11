@@ -346,6 +346,63 @@
     ];
   }
 
+  // The last filter of the moving preview. It does what the PNG does after the screen
+  // effects: nudges each pixel (Ordered uses the Bayer grid, Error diffusion uses a
+  // fixed noise because a shader can't pass errors from pixel to pixel), then snaps it
+  // to the nearest palette color.
+  var PALETTE_FILTER_MAX = 256;
+  var PALETTE_FRAGMENT = [
+    '#version 300 es',
+    'precision highp float;',
+    'in vec2 vTextureCoord;',
+    'out vec4 finalColor;',
+    'uniform sampler2D uTexture;',
+    'uniform vec4 uInputSize;',
+    'uniform vec3 uPalette[' + PALETTE_FILTER_MAX + '];',
+    'uniform float uCount;',
+    'uniform float uMode;',
+    'uniform float uAmount;',
+    'const float BAYER[16] = float[16](' + BAYER_4.map(function (n) { return n.toFixed(1); }).join(',') + ');',
+    'void main(void) {',
+    '  vec4 c = texture(uTexture, vTextureCoord);',
+    '  vec2 p = floor(vTextureCoord * uInputSize.xy);',
+    '  float n = 0.0;',
+    '  if (uMode > 1.5) n = (BAYER[int(mod(p.y, 4.0)) * 4 + int(mod(p.x, 4.0))] + 0.5) / 16.0 - 0.5;',
+    '  else if (uMode > 0.5) n = fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))) - 0.5;',
+    '  vec3 rgb = c.rgb + n * uAmount;',
+    '  vec3 best = uPalette[0];',
+    '  float bestDist = 1e9;',
+    '  for (int i = 0; i < ' + PALETTE_FILTER_MAX + '; i++) {',
+    '    if (float(i) >= uCount) break;',
+    '    vec3 d = rgb - uPalette[i];',
+    '    float dist = dot(d, d);',
+    '    if (dist < bestDist) { bestDist = dist; best = uPalette[i]; }',
+    '  }',
+    '  finalColor = vec4(best, c.a);',
+    '}'
+  ].join('\n');
+
+  // palette: [{r, g, b}] from processImage. colors: the palette size setting. dither: 'off', 'diffusion' or 'ordered'.
+  function makePaletteFilter(palette, colors, dither) {
+    var table = new Float32Array(PALETTE_FILTER_MAX * 3);
+    palette.slice(0, PALETTE_FILTER_MAX).forEach(function (c, i) {
+      table[i * 3] = c.r / 255;
+      table[i * 3 + 1] = c.g / 255;
+      table[i * 3 + 2] = c.b / 255;
+    });
+    return new PIXI.Filter({
+      glProgram: PIXI.GlProgram.from({ vertex: PIXI.defaultFilterVert, fragment: PALETTE_FRAGMENT, name: 'palette-filter' }),
+      resources: {
+        paletteUniforms: {
+          uPalette: { value: table, type: 'vec3<f32>', size: PALETTE_FILTER_MAX },
+          uCount: { value: Math.min(palette.length, PALETTE_FILTER_MAX), type: 'f32' },
+          uMode: { value: DITHER_MODES.indexOf(dither), type: 'f32' },
+          uAmount: { value: ORDERED.spread / Math.cbrt(colors), type: 'f32' }
+        }
+      }
+    });
+  }
+
   var screenRenderer = null; // a hidden PixiJS renderer, created once and reused
   var screenFailed = false;  // set when PixiJS couldn't start, so it isn't retried
 
@@ -504,6 +561,7 @@
     ORDERED: ORDERED,
     orderPixels: orderPixels,
     makeScreenFilters: makeScreenFilters,
+    makePaletteFilter: makePaletteFilter,
     usesGpu: usesGpu,
     checkFile: checkFile,
     loadImage: loadImage,
