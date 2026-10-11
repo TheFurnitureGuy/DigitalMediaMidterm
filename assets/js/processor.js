@@ -349,7 +349,8 @@
   // The last filter of the moving preview. It does what the PNG does after the screen
   // effects: nudges each pixel (Ordered uses the Bayer grid, Error diffusion uses a
   // fixed noise because a shader can't pass errors from pixel to pixel), then snaps it
-  // to the nearest palette color.
+  // to the nearest palette color. The palette sits in a 256x1 texture, because phones
+  // only guarantee 224 uniform vectors and a 256-color array doesn't fit.
   var PALETTE_FILTER_MAX = 256;
   var PALETTE_FRAGMENT = [
     '#version 300 es',
@@ -358,7 +359,7 @@
     'out vec4 finalColor;',
     'uniform sampler2D uTexture;',
     'uniform vec4 uInputSize;',
-    'uniform vec3 uPalette[' + PALETTE_FILTER_MAX + '];',
+    'uniform sampler2D uPaletteTexture;',
     'uniform float uCount;',
     'uniform float uMode;',
     'uniform float uAmount;',
@@ -370,13 +371,14 @@
     '  if (uMode > 1.5) n = (BAYER[int(mod(p.y, 4.0)) * 4 + int(mod(p.x, 4.0))] + 0.5) / 16.0 - 0.5;',
     '  else if (uMode > 0.5) n = fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))) - 0.5;',
     '  vec3 rgb = c.rgb + n * uAmount;',
-    '  vec3 best = uPalette[0];',
+    '  vec3 best = texelFetch(uPaletteTexture, ivec2(0, 0), 0).rgb;',
     '  float bestDist = 1e9;',
     '  for (int i = 0; i < ' + PALETTE_FILTER_MAX + '; i++) {',
     '    if (float(i) >= uCount) break;',
-    '    vec3 d = rgb - uPalette[i];',
+    '    vec3 color = texelFetch(uPaletteTexture, ivec2(i, 0), 0).rgb;',
+    '    vec3 d = rgb - color;',
     '    float dist = dot(d, d);',
-    '    if (dist < bestDist) { bestDist = dist; best = uPalette[i]; }',
+    '    if (dist < bestDist) { bestDist = dist; best = color; }',
     '  }',
     '  finalColor = vec4(best, c.a);',
     '}'
@@ -384,23 +386,35 @@
 
   // palette: [{r, g, b}] from processImage. colors: the palette size setting. dither: 'off', 'diffusion' or 'ordered'.
   function makePaletteFilter(palette, colors, dither) {
-    var table = new Float32Array(PALETTE_FILTER_MAX * 3);
+    var strip = document.createElement('canvas');
+    strip.width = PALETTE_FILTER_MAX;
+    strip.height = 1;
+    var ctx = strip.getContext('2d');
     palette.slice(0, PALETTE_FILTER_MAX).forEach(function (c, i) {
-      table[i * 3] = c.r / 255;
-      table[i * 3 + 1] = c.g / 255;
-      table[i * 3 + 2] = c.b / 255;
+      ctx.fillStyle = 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')';
+      ctx.fillRect(i, 0, 1, 1);
     });
-    return new PIXI.Filter({
+    var texture = PIXI.Texture.from(strip, true);
+    texture.source.scaleMode = 'nearest';
+
+    var filter = new PIXI.Filter({
       glProgram: PIXI.GlProgram.from({ vertex: PIXI.defaultFilterVert, fragment: PALETTE_FRAGMENT, name: 'palette-filter' }),
       resources: {
+        uPaletteTexture: texture.source,
         paletteUniforms: {
-          uPalette: { value: table, type: 'vec3<f32>', size: PALETTE_FILTER_MAX },
           uCount: { value: Math.min(palette.length, PALETTE_FILTER_MAX), type: 'f32' },
           uMode: { value: DITHER_MODES.indexOf(dither), type: 'f32' },
           uAmount: { value: ORDERED.spread / Math.cbrt(colors), type: 'f32' }
         }
       }
     });
+    // Destroying the filter also frees its palette texture.
+    var destroy = filter.destroy;
+    filter.destroy = function () {
+      texture.destroy(true);
+      destroy.apply(this, arguments);
+    };
+    return filter;
   }
 
   var screenRenderer = null; // a hidden PixiJS renderer, created once and reused
